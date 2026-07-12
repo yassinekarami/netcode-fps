@@ -5,5 +5,6 @@ public class ProjectileScriptableObject : ScriptableObject
 {
     public string projectileName;
     public int damage;
-    public GameObject prefab;
+    public GameObject realProjectile;
+    public GameObject dummyProjectile;
 }

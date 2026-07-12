@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: WeaponLauncherData
   m_EditorClassIdentifier: Assembly-CSharp::WeaponScriptableObject
   weaponName: Launcher
-  prefab: {fileID: 2225486910712267859, guid: 185dc0af52f1cc64d9b04e6cf16b1b14, type: 3}
   projectileData: {fileID: 11400000, guid: f9189ea6ff0207344a9ded941e054a95, type: 2}
-  index: 2
+  fireRate: 1.25
+  maxAmmo: 50
+  magazineSize: 10

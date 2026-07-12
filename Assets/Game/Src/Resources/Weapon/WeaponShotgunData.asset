@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: WeaponShotgunData
   m_EditorClassIdentifier: Assembly-CSharp::WeaponScriptableObject
   weaponName: Shotgun
-  prefab: {fileID: 2225486910712267859, guid: 79da2c130fd8d2344949fb7d31c2c06c, type: 3}
   projectileData: {fileID: 11400000, guid: b0ffcc612b6455e4b93a6a92db8c2f3a, type: 2}
-  index: 3
+  fireRate: 1
+  maxAmmo: 30
+  magazineSize: 5

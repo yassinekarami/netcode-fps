@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileScriptableObject
   projectileName: Blaster projectile
   damage: 10
-  prefab: {fileID: 3659995153115176983, guid: 7e8053f218afd7d46941f0968d8487c8, type: 3}
+  realProjectile: {fileID: 2659861645981294354, guid: b5185c04efbd1bf4ca4800d3cc55354f,
+    type: 3}
+  dummyProjectile: {fileID: 6897630508637557443, guid: 555596d014462864db56d492eda7c128,
+    type: 3}

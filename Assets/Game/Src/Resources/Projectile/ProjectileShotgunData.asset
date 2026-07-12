@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileScriptableObject
   projectileName: Shotgun projectile
   damage: 10
-  prefab: {fileID: 3659995153115176983, guid: bbdf6b1a49a385249bfec76e1dafd8c6, type: 3}
+  realProjectile: {fileID: 3828158948817808438, guid: d4e21a53658220e42aa8d84bb660db8e,
+    type: 3}
+  dummyProjectile: {fileID: 5718810470075118871, guid: ad0da90d3d5350a44ac4a8a88d590653,
+    type: 3}

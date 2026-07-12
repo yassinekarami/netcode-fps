@@ -22,6 +22,7 @@ public class PlayerController : NetworkBehaviour
     private Transform cameraTransform;
 
 
+
     private InputAction moveAction;
     private InputAction lookArroundAction;
     private InputAction fireAction;
@@ -37,9 +38,11 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float minPitch = -80f;
     [SerializeField] private float maxPitch = 80f;
 
-    private float pitch = 0f;
     private string inputToEnable = "keyboard";
 
+    /// <summary>
+    /// on network spawn, initialize the input action map if the player is the owner of this object.
+    /// </summary>
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -60,7 +63,12 @@ public class PlayerController : NetworkBehaviour
         reloadAction = InputSystem.actions.FindActionMap(inputToEnable).FindAction("reload");
         changeWeaponAction = InputSystem.actions.FindActionMap(inputToEnable).FindAction("changeWeapon");
 
-
+        Debug.Log("moveAction " + moveAction);
+        Debug.Log("lookArroundAction " + lookArroundAction);
+        Debug.Log("fireAction " + fireAction);
+        Debug.Log("reloadAction " + reloadAction);
+        Debug.Log("changeWeaponAction " + changeWeaponAction);
+        Debug.Log("inputToEnable " + inputToEnable);
         moveAction.performed += ctx => ActionMovePerformed(ctx.ReadValue<Vector2>());
         lookArroundAction.performed += ctx => ActionLookArroundPerformed(ctx.ReadValue<Vector2>());
         fireAction.performed += ctx => ActionFirePerformed();
@@ -72,18 +80,18 @@ public class PlayerController : NetworkBehaviour
     void FixedUpdate()
     {
     
-        if (moveAction.IsInProgress())
+        if (moveAction != null && moveAction.IsInProgress())
         {
             ActionMovePerformed(moveAction.ReadValue<Vector2>());
         }
-        if (lookArroundAction.IsInProgress())
+        if (lookArroundAction != null && lookArroundAction.IsInProgress())
         {
             ActionLookArroundPerformed(lookArroundAction.ReadValue<Vector2>());
         }
     }
 
     /// <summary>
-    /// 
+    /// on network despawn, unsubscribe from the input action events to avoid memory leaks and unintended behavior.
     /// </summary>
     public override void OnNetworkDespawn()
     {
@@ -119,7 +127,7 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     private void ActionFirePerformed()
     {
-        playerInputScriptableObject.FireWeapon();
+    //    playerInputScriptableObject.FireWeapon(weaponController);
     }
 
     /// <summary>
@@ -135,7 +143,7 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     private void ActionChangeWeaponPerformed()
     {
-        playerInputScriptableObject.ChangeWeapon();
+        playerInputScriptableObject.ChangeWeapon(weaponController);
     }
    
 }

@@ -39,9 +39,10 @@ public class PlayerInputScriptableObject : ScriptableObject
         Debug.Log("switch weapon");
     }
 
-    public void FireWeapon()
+    public void FireWeapon(WeaponController weaponController)
     {
         Debug.Log("firing");
+        weaponController.RequestWeaponFire();
     }
 
     public void ReloadWeapon()
@@ -49,8 +50,9 @@ public class PlayerInputScriptableObject : ScriptableObject
         Debug.Log("reloading");
     }
 
-    public void ChangeWeapon()
+    public void ChangeWeapon(WeaponController weaponController)
     {
         Debug.Log("switch weapon");
+        weaponController.SelectNextWeapon();
     }
 }

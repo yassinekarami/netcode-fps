@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: WeaponBlasterData
   m_EditorClassIdentifier: Assembly-CSharp::WeaponScriptableObject
   weaponName: Blaster
-  prefab: {fileID: 2225486910712267859, guid: b6d07131266303344936f024f9e70859, type: 3}
   projectileData: {fileID: 11400000, guid: 12810ef01dde32b419d2b5f4b8bed5e2, type: 2}
-  index: 1
+  fireRate: 0.75
+  maxAmmo: 90
+  magazineSize: 30

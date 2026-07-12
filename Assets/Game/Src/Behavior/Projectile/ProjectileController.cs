@@ -1,9 +1,9 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class ProjectileController : MonoBehaviour
+public class ProjectileController : NetworkBehaviour
 {
 
-    public ProjectileScriptableObject projectileData;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
