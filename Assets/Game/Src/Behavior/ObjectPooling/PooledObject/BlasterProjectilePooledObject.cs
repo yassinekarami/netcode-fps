@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class BlasterProjectilePooledObject : AbstractPooledObject
 {
-    public GameObject prefab;
     public override void SpawnObject()
     {
         throw new System.NotImplementedException();
@@ -12,7 +11,6 @@ public class BlasterProjectilePooledObject : AbstractPooledObject
     {
         throw new System.NotImplementedException();
     }
-
 }
 
 

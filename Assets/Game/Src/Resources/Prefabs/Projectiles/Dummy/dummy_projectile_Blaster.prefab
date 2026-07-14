@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 1632963696774386169}
   - component: {fileID: 2401884261878150990}
   - component: {fileID: 5340359367717720009}
+  - component: {fileID: -7792167426962173781}
   m_Layer: 0
   m_Name: dummy_projectile_Blaster
   m_TagString: Untagged
@@ -200,7 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3146021962
+  GlobalObjectIdHash: 3484698734
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -226,4 +227,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d33e1c76effd12a4684bbdb1c6922cf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileController
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &-7792167426962173781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6897630508637557443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3e8c2a69864a88498ce8ca90cb5a011, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BlasterProjectilePooledObject
   ShowTopMostFoldoutHeaderGroup: 1

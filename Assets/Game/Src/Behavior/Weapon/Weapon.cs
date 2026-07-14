@@ -54,7 +54,8 @@ public class Weapon : NetworkBehaviour
     public void ApplyWeaponFireVisualClientRpc()
     {
         Debug.Log($"Client {OwnerClientId} applying weapon fire visual effect");
-        Instantiate(weaponData.projectileData.dummyProjectile, transform.position, transform.rotation);
+        DummyObjectPoolManager.instance.SpawnObject(weaponData.projectileData.projectileName, transform.position, transform.rotation, OwnerClientId);
+      //  Instantiate(weaponData.projectileData.dummyProjectile, transform.position, transform.rotation);
 
     }
 

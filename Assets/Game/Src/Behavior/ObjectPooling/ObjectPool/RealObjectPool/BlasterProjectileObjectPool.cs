@@ -5,11 +5,10 @@ using System.Collections.Generic;
 
 public class BlasterProctileObjectPool: ObjectPool<BlasterProjectilePooledObject>
 {
-    public void Initialize(int size, Transform parent)
+
+    public void Initialize(string path, int size, Transform parent)
     {
-        GameObject prefab = Resources.Load<GameObject>(
-            "Prefabs/Projectiles/Real/real_projectile_Blaster"
-        );
+        GameObject prefab = Resources.Load<GameObject>(path);
 
         for (int i = 0; i < size; i++)
         {
