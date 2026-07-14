@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class BlasterProctileObjectPool: ObjectPool<BlasterProjectilePooledObject>
 {
-    public void Initialize(int size)
+    public void Initialize(int size, Transform parent)
     {
         GameObject prefab = Resources.Load<GameObject>(
             "Prefabs/Projectiles/Real/real_projectile_Blaster"
@@ -13,7 +13,7 @@ public class BlasterProctileObjectPool: ObjectPool<BlasterProjectilePooledObject
 
         for (int i = 0; i < size; i++)
         {
-            GameObject instance = Object.Instantiate(prefab);
+            GameObject instance = Object.Instantiate(prefab, parent);
             instance.SetActive(false);
 
             BlasterProjectilePooledObject projectile =

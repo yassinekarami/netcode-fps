@@ -141,7 +141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BlasterProjectilePooledObject
   ShowTopMostFoldoutHeaderGroup: 1
-  pooledObjectPrefab: {fileID: 2659861645981294354}
+  prefab: {fileID: 2659861645981294354}
 --- !u!1 &6562926632814293424
 GameObject:
   m_ObjectHideFlags: 0

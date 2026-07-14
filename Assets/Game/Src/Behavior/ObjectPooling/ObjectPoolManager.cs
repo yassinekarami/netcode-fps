@@ -14,7 +14,8 @@ public class ObjectPoolManager : NetworkBehaviour
         if (instance == null) instance = this;
  
         blasterProjecileObjectPool = new BlasterProctileObjectPool();
-        blasterProjecileObjectPool.Initialize(10);
+        blasterProjecileObjectPool.Initialize(10, instance.gameObject.transform);
+
     }
 
 

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d525e09568663d4b95660c53a5756bf, type: 3}
   m_Name: ProjectileBlasterData
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileScriptableObject
-  projectileName: Blaster projectile
+  projectileName: BlasterProjectile
   damage: 10
   realProjectile: {fileID: 2659861645981294354, guid: b5185c04efbd1bf4ca4800d3cc55354f,
     type: 3}

@@ -36,10 +36,8 @@ public class Weapon : NetworkBehaviour
         if (currentAmmo > 0)
         {
             currentAmmo--;
-            ObjectPoolManager.instance.SpawnObject("BlasterProjectile", transform.position, transform.rotation, OwnerClientId);
-            //  ObjectPoolManager.instance.blas
-          //  Instantiate(weaponData.projectileData.realProjectile, transform.position, transform.rotation);
-            //    ApplyWeaponFireVisualClientRpc();
+            ObjectPoolManager.instance.SpawnObject(weaponData.projectileData.projectileName, transform.position, transform.rotation, OwnerClientId);
+            ApplyWeaponFireVisualClientRpc();
         }
         else
         {
@@ -49,17 +47,15 @@ public class Weapon : NetworkBehaviour
     }
 
     /// <summary>
-    /// apply the visual effect of firing the weapon on all clients and the host
+    /// apply the visual effect of firing the weapon on all clients except the owner who is the authority 
+    /// the host display real projectile while the clients display dummy projectile
     /// </summary>
-    [Rpc(SendTo.ClientsAndHost)]
+    [Rpc(SendTo.NotAuthority)]
     public void ApplyWeaponFireVisualClientRpc()
     {
-        if (!IsOwner)
-        {
-            Debug.Log($"Client {OwnerClientId} applying weapon fire visual effect");
-            Instantiate(weaponData.projectileData.dummyProjectile, transform.position, transform.rotation);
-        }
-       
+        Debug.Log($"Client {OwnerClientId} applying weapon fire visual effect");
+        Instantiate(weaponData.projectileData.dummyProjectile, transform.position, transform.rotation);
+
     }
 
     /// <summary>
