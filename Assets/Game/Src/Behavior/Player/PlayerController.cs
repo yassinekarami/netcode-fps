@@ -127,7 +127,7 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     private void ActionFirePerformed()
     {
-    //    playerInputScriptableObject.FireWeapon(weaponController);
+        playerInputScriptableObject.FireWeapon(weaponController);
     }
 
     /// <summary>

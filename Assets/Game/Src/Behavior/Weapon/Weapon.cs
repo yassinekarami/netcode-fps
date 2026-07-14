@@ -12,11 +12,8 @@ public class Weapon : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-
         base.OnNetworkSpawn();
-        if (!IsOwner) return;
         currentAmmo = weaponData.magazineSize;
-
     }
 
     /// <summary>
@@ -26,9 +23,9 @@ public class Weapon : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void RequestWeaponFireServerRpc()
     {
-        Debug.LogWarning($"Client {OwnerClientId} requested weaponFire");
+        
+        Debug.Log($"Client {OwnerClientId} requested weaponFire");
 
-        if (!IsOwner) return;
         if (weaponData == null)
         {
             Debug.LogWarning("Weapon data is not assigned.");
@@ -39,40 +36,15 @@ public class Weapon : NetworkBehaviour
         if (currentAmmo > 0)
         {
             currentAmmo--;
-            Instantiate(weaponData.projectileData.realProjectile, transform.position, transform.rotation);
-            ApplyWeaponFireVisualClientRpc();
+            ObjectPoolManager.instance.SpawnObject("BlasterProjectile", transform.position, transform.rotation, OwnerClientId);
+            //  ObjectPoolManager.instance.blas
+          //  Instantiate(weaponData.projectileData.realProjectile, transform.position, transform.rotation);
+            //    ApplyWeaponFireVisualClientRpc();
         }
         else
         {
             Debug.Log("Out of ammo , Reloading!");
-            ReloadWeapon();
-        }
-    }
-
-
-    [Rpc(SendTo.NotServer)]
-    public void RequestWeaponFireClientRpc()
-    {
-        Debug.LogWarning($"Client {OwnerClientId} requested weaponFire");
-
-        if (!IsOwner) return;
-        if (weaponData == null)
-        {
-            Debug.LogWarning("Weapon data is not assigned.");
-            return;
-        }
-        // Logique de tir ici, par exemple instancier un projectile
-        Debug.Log($"Firing weapon: {weaponData.weaponName}");
-        if (currentAmmo > 0)
-        {
-            currentAmmo--;
-            Instantiate(weaponData.projectileData.realProjectile, transform.position, transform.rotation);
-            ApplyWeaponFireVisualClientRpc();
-        }
-        else
-        {
-            Debug.Log("Out of ammo , Reloading!");
-            ReloadWeapon();
+            RequestReloadServerRpc();
         }
     }
 

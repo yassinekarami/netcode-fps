@@ -58,15 +58,9 @@ public class WeaponController : NetworkBehaviour
     public void RequestWeaponFire()
     {
         currentWeapon.TryGetComponent<Weapon>(out var weaponComponent);
-
-        if (IsHost)
-        {
-            weaponComponent?.RequestWeaponFireServerRpc();
-        }
-        else
-        {
-            weaponComponent?.RequestWeaponFireClientRpc();
-        }
+        Debug.Log($"weapon component {weaponComponent}");
+        weaponComponent?.RequestWeaponFireServerRpc();
+       
     }
 
     /// <summary>
