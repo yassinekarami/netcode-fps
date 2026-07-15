@@ -7,8 +7,8 @@ public class DummyObjectPoolManager : NetworkBehaviour
     
     public static DummyBlasterProjectileObjectPool dummyBlasterProjectileObjectPool { get; private set; }
 
-    public static DummyShotgunProjectileObjectPool dummyShotgunProjecileObjectPool { get; private set; }
-    public static DummyDiscProjectileObjectPool dummyDiscProjecileObjectPool { get; private set; }
+    public static DummyShotgunProjectileObjectPool dummyShotgunProjectileObjectPool { get; private set; }
+    public static DummyDiscProjectileObjectPool dummyDiscProjectileObjectPool { get; private set; }
     public override void OnNetworkSpawn()
     {
         Debug.Log("DummyObjectPoolManager spawned");
@@ -24,13 +24,18 @@ public class DummyObjectPoolManager : NetworkBehaviour
             {
                 dummyBlasterProjectileObjectPool = new DummyBlasterProjectileObjectPool();
                 dummyBlasterProjectileObjectPool.Initialize("Prefabs/Projectiles/Dummy/dummy_projectile_Blaster", 3, instance.gameObject.transform);
+            }
+            if (dummyShotgunProjectileObjectPool == null)
+            {
+                dummyShotgunProjectileObjectPool = new DummyShotgunProjectileObjectPool();
+                dummyShotgunProjectileObjectPool.Initialize("Prefabs/Projectiles/Dummy/dummy_projectile_Shotgun", 3, instance.gameObject.transform);
+            }
 
+            if (dummyDiscProjectileObjectPool == null)
+            {
 
-                dummyShotgunProjecileObjectPool = new DummyShotgunProjectileObjectPool();
-                dummyShotgunProjecileObjectPool.Initialize("Prefabs/Projectiles/Dummy/dummy_projectile_Shotgun", 3, instance.gameObject.transform);
-
-                dummyDiscProjecileObjectPool = new DummyDiscProjectileObjectPool();
-                dummyDiscProjecileObjectPool.Initialize("Prefabs/Projectiles/Dummy/dummy_projectile_Disc", 3, instance.gameObject.transform);
+                dummyDiscProjectileObjectPool = new DummyDiscProjectileObjectPool();
+                dummyDiscProjectileObjectPool.Initialize("Prefabs/Projectiles/Dummy/dummy_projectile_Disc", 3, instance.gameObject.transform);
             }
         }
     }
@@ -44,11 +49,12 @@ public class DummyObjectPoolManager : NetworkBehaviour
         }
         else if (name == "ShotgunProjectile")
         {
-            dummyShotgunProjecileObjectPool.SpawnObject(position, rotation, ownerId);
+            dummyShotgunProjectileObjectPool.SpawnObject(position, rotation, ownerId);
         }
         else if (name == "DiscProjectile")
         {
-            dummyDiscProjecileObjectPool.SpawnObject(position, rotation, ownerId);
+          //  dummyDiscProjectileObjectPool.SpawnObject(position, rotation, ownerId);
+            Debug.LogWarning("disc projectile is not available");
         }
     }
 }

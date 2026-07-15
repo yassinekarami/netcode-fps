@@ -15,5 +15,5 @@ MonoBehaviour:
   weaponName: Launcher
   projectileData: {fileID: 11400000, guid: f9189ea6ff0207344a9ded941e054a95, type: 2}
   fireRate: 1.25
-  maxAmmo: 50
+  maxAmmo: 30
   magazineSize: 10

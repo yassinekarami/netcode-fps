@@ -67,13 +67,14 @@ public class WeaponController : NetworkBehaviour
     /// 
     /// </summary>
     /// <param name="previousIndex"></param>
-    /// <param name="newIndex"></param>
+    /// <param name="currentIndex"></param>
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void UpdateWeaponClientRpc(int previousIndex, int newIndex)
+    private void UpdateWeaponClientRpc(int previousIndex, int currentIndex)
     {
-        currentWeaponIndex = newIndex;
-        ApplyWeaponVisual(previousIndex, newIndex);
+        currentWeaponIndex = currentIndex;
+        currentWeapon = weapons[currentIndex];
+        ApplyWeaponVisual(previousIndex, currentIndex);
     }
     /// <summary>
     /// apply the weapon visual change by deactivating the previous weapon and activating the new one, with debug logs for tracking.

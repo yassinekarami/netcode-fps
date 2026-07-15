@@ -2,18 +2,41 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// Data structure for holding the weaponData
+/// </summary>
+struct weaponDataStruct
+{
+    public int currentAmmo { get; set; }
+    public int magazineSize { get; set; }
+    public int remainingAmmo { get; set; }
+
+    public bool hasBeenInitialized { get; set; }
+
+}
 public class Weapon : NetworkBehaviour
 {
 
     [SerializeField]
     private WeaponScriptableObject weaponData;
-
-    private int currentAmmo;
+    weaponDataStruct weaponAmmo;
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        currentAmmo = weaponData.magazineSize;
+
+    }
+
+    private void OnEnable()
+    {
+        if (!weaponAmmo.hasBeenInitialized)
+        {
+            weaponAmmo.currentAmmo = weaponData.magazineSize;
+            weaponAmmo.remainingAmmo = weaponData.maxAmmo;
+            weaponAmmo.magazineSize = weaponData.magazineSize;
+            weaponAmmo.hasBeenInitialized = true;
+        }
+
     }
 
     /// <summary>
@@ -32,9 +55,9 @@ public class Weapon : NetworkBehaviour
         }
         // Logique de tir ici, par exemple instancier un projectile
         Debug.Log($"Firing weapon: {weaponData.weaponName}");
-        if (currentAmmo > 0)
+        if (weaponAmmo.currentAmmo > 0)
         {
-            currentAmmo--;
+            weaponAmmo.currentAmmo--;
             ObjectPoolManager.instance.SpawnObject(weaponData.projectileData.projectileName, transform.position, transform.rotation, OwnerClientId);
             ApplyWeaponFireVisualClientRpc();
         }
@@ -74,7 +97,7 @@ public class Weapon : NetworkBehaviour
         }
      
         ReloadWeapon();
-        Debug.Log($"Reloaded weapon: {weaponData.weaponName}. Current ammo: {currentAmmo}");
+        Debug.Log($"Reloaded weapon: {weaponData.weaponName}. Current ammo: {weaponAmmo.currentAmmo}");
     }
 
     /// <summary>
@@ -83,8 +106,8 @@ public class Weapon : NetworkBehaviour
     private void ReloadWeapon()
     {
         // Logique de rechargement ici
-        currentAmmo = weaponData.magazineSize;
-        weaponData.maxAmmo -= weaponData.magazineSize;
+        weaponAmmo.currentAmmo = weaponData.magazineSize;
+        weaponAmmo.remainingAmmo -= weaponAmmo.magazineSize;
     }
 
 }
