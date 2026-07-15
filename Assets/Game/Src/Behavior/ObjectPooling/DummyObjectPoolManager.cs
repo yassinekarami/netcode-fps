@@ -23,14 +23,14 @@ public class DummyObjectPoolManager : NetworkBehaviour
             if (dummyBlasterProjectileObjectPool == null)
             {
                 dummyBlasterProjectileObjectPool = new DummyBlasterProjectileObjectPool();
-                dummyBlasterProjectileObjectPool.Initialize("Prefabs/Projectiles/Dummy/dummy_projectile_Blaster", 10, instance.gameObject.transform);
+                dummyBlasterProjectileObjectPool.Initialize("Prefabs/Projectiles/Dummy/dummy_projectile_Blaster", 3, instance.gameObject.transform);
 
 
                 dummyShotgunProjecileObjectPool = new DummyShotgunProjectileObjectPool();
-                dummyShotgunProjecileObjectPool.Initialize("Prefabs/Projectiles/Real/real_projectile_Shotgun", 10, instance.gameObject.transform);
+                dummyShotgunProjecileObjectPool.Initialize("Prefabs/Projectiles/Dummy/dummy_projectile_Shotgun", 3, instance.gameObject.transform);
 
                 dummyDiscProjecileObjectPool = new DummyDiscProjectileObjectPool();
-                dummyDiscProjecileObjectPool.Initialize("Prefabs/Projectiles/Real/real_projectile_Disc", 10, instance.gameObject.transform);
+                dummyDiscProjecileObjectPool.Initialize("Prefabs/Projectiles/Dummy/dummy_projectile_Disc", 3, instance.gameObject.transform);
             }
         }
     }
