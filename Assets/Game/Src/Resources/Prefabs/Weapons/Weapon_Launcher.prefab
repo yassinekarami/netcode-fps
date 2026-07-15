@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1284412032582177879}
   - component: {fileID: 6471968429945751368}
   - component: {fileID: 3471509760121373335}
+  - component: {fileID: 3933038756943096500}
   - component: {fileID: 7583640433812654122}
   m_Layer: 10
   m_Name: Weapon_Launcher
@@ -226,6 +227,20 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3933038756943096500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2225486910712267859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1efa8d8cc610816479c0438073328949, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Weapon
+  ShowTopMostFoldoutHeaderGroup: 1
+  weaponData: {fileID: 11400000, guid: dbb579cb31b274c4d8055570b8b61622, type: 2}
 --- !u!82 &7583640433812654122
 AudioSource:
   m_ObjectHideFlags: 0

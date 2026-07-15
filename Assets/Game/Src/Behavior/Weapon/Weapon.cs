@@ -23,7 +23,6 @@ public class Weapon : NetworkBehaviour
     [Rpc(SendTo.Server)]
     public void RequestWeaponFireServerRpc()
     {
-        
         Debug.Log($"Client {OwnerClientId} requested weaponFire");
 
         if (weaponData == null)

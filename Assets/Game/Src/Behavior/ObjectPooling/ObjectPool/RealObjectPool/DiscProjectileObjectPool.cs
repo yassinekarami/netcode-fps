@@ -1,8 +1,8 @@
 using UnityEngine;
-public class BlasterProctileObjectPool: ObjectPool<BlasterProjectilePooledObject>
-{
 
-    public void Initialize(string path, int size, Transform parent)
+public class DiscProjectileObjectPool : ObjectPool<DiscProjectilePooledObject>
+{
+     public void Initialize(string path, int size, Transform parent)
     {
         GameObject prefab = Resources.Load<GameObject>(path);
 
@@ -11,11 +11,10 @@ public class BlasterProctileObjectPool: ObjectPool<BlasterProjectilePooledObject
             GameObject instance = Object.Instantiate(prefab, parent);
             instance.SetActive(false);
 
-            BlasterProjectilePooledObject projectile =
-                instance.GetComponent<BlasterProjectilePooledObject>();
+            DiscProjectilePooledObject projectile =
+                instance.GetComponent<DiscProjectilePooledObject>();
 
             objectPool.Enqueue(projectile);
         }
     }
-
 }

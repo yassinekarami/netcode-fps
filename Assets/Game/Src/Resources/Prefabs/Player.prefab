@@ -1554,19 +1554,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Weapon_Shotgun
       objectReference: {fileID: 0}
-    - target: {fileID: 3177526978238606456, guid: 79da2c130fd8d2344949fb7d31c2c06c,
+    - target: {fileID: 2225486910712267859, guid: 79da2c130fd8d2344949fb7d31c2c06c,
         type: 3}
-      propertyPath: GlobalObjectIdHash
-      value: 2278211935
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2225486910712267859, guid: 79da2c130fd8d2344949fb7d31c2c06c,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 9195077366415337240}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 79da2c130fd8d2344949fb7d31c2c06c, type: 3}
 --- !u!4 &3642275594418814205 stripped
 Transform:
@@ -1580,20 +1576,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 3200215277398735021}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &9195077366415337240
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3642275594418814206}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1efa8d8cc610816479c0438073328949, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Weapon
-  ShowTopMostFoldoutHeaderGroup: 1
-  weaponData: {fileID: 11400000, guid: 70f2f4d97747ce246888edc83db1bcd9, type: 2}
 --- !u!1001 &4005832627069646311
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1685,11 +1667,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6390548193582862727}
     m_Modifications:
-    - target: {fileID: -6236585944384757915, guid: 185dc0af52f1cc64d9b04e6cf16b1b14,
-        type: 3}
-      propertyPath: GlobalObjectIdHash
-      value: 1952124321
-      objectReference: {fileID: 0}
     - target: {fileID: 2225486910712267856, guid: 185dc0af52f1cc64d9b04e6cf16b1b14,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1745,14 +1722,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Weapon_Launcher
       objectReference: {fileID: 0}
+    - target: {fileID: 2225486910712267859, guid: 185dc0af52f1cc64d9b04e6cf16b1b14,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2225486910712267859, guid: 185dc0af52f1cc64d9b04e6cf16b1b14,
-        type: 3}
-      insertIndex: 5
-      addedObject: {fileID: 3159244348774969826}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 185dc0af52f1cc64d9b04e6cf16b1b14, type: 3}
 --- !u!4 &5127433483454755320 stripped
 Transform:
@@ -1766,20 +1744,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6470204936289973672}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3159244348774969826
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5127433483454755323}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1efa8d8cc610816479c0438073328949, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Weapon
-  ShowTopMostFoldoutHeaderGroup: 1
-  weaponData: {fileID: 11400000, guid: dbb579cb31b274c4d8055570b8b61622, type: 2}
 --- !u!1001 &6923711825361436051
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1788,11 +1752,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6390548193582862727}
     m_Modifications:
-    - target: {fileID: 1830379388902786774, guid: b6d07131266303344936f024f9e70859,
-        type: 3}
-      propertyPath: GlobalObjectIdHash
-      value: 392272379
-      objectReference: {fileID: 0}
     - target: {fileID: 2225486910712267856, guid: b6d07131266303344936f024f9e70859,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1851,11 +1810,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2225486910712267859, guid: b6d07131266303344936f024f9e70859,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6566622727655276487}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b6d07131266303344936f024f9e70859, type: 3}
 --- !u!1 &9148908389665847744 stripped
 GameObject:
@@ -1863,20 +1818,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6923711825361436051}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6566622727655276487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9148908389665847744}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1efa8d8cc610816479c0438073328949, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Weapon
-  ShowTopMostFoldoutHeaderGroup: 1
-  weaponData: {fileID: 11400000, guid: 361920c7637e54f4eb6d4914227f8703, type: 2}
 --- !u!4 &9148908389665847747 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2225486910712267856, guid: b6d07131266303344936f024f9e70859,

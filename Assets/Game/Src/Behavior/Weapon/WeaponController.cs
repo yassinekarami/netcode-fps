@@ -18,10 +18,10 @@ public class WeaponController : NetworkBehaviour
         base.OnNetworkSpawn();
         Debug.LogWarning($"WeaponController spawned for client {OwnerClientId}. Weapons list size : {weapons.Length} Current weapon index: {currentWeaponIndex}");
         // Applique l'état initial pour tout le monde, y compris les late-joiners
-       
+
         currentWeapon = weapons[currentWeaponIndex];
+        DisableUnequipedWeapon(currentWeaponIndex);
         ApplyWeaponVisual(-1, currentWeaponIndex);
-     
     }
 
     /// <summary>
@@ -98,6 +98,19 @@ public class WeaponController : NetworkBehaviour
         else
         {
             Debug.LogWarning($"Invalid weapon index: {newIndex}");
+        }
+    }
+    /// <summary>
+    /// disable weapon that index is different from the equiped weapon index
+    /// </summary>
+    /// <param name="equipedWeaponsIndex"></param>
+    private void DisableUnequipedWeapon(int equipedWeaponsIndex)
+    {
+        for (int i = 0; i < weapons.Length; i++) {
+            if (i != equipedWeaponsIndex)
+            {
+                weapons[i].SetActive(false);
+            }
         }
     }
 
