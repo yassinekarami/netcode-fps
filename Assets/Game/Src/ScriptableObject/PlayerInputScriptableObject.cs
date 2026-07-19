@@ -15,12 +15,13 @@ public class PlayerInputScriptableObject : ScriptableObject
 
     private float pitch = 0f;
 
-    public void MoveCharacter(CharacterController characterController, Vector2 moveValue)
+    public Vector3 MoveCharacter(CharacterController characterController, Vector2 moveValue)
     {
         // Direction relative à l'orientation du perso (pas espace monde)
         Vector3 movementVector = (characterController.transform.right * moveValue.x + characterController.transform.forward * moveValue.y) * moveSpeed;
 
         characterController.Move(movementVector * Time.deltaTime);
+        return characterController.transform.position;
     }
 
     public void LookAround(Transform cameraTransform, Vector2 lookValue)

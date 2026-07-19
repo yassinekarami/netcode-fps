@@ -1,11 +1,6 @@
-using NUnit.Framework;
-using System.Collections.Generic;
 using Unity.Netcode;
-using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.PlayerLoop;
-using UnityEngine.TextCore.Text;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : NetworkBehaviour
@@ -22,7 +17,7 @@ public class PlayerController : NetworkBehaviour
     private Transform cameraTransform;
 
 
-
+    [Header("InputAction")]
     private InputAction moveAction;
     private InputAction lookArroundAction;
     private InputAction fireAction;
@@ -38,18 +33,68 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float minPitch = -80f;
     [SerializeField] private float maxPitch = 80f;
 
+   
+
     private string inputToEnable = "keyboard";
+    /// <summary>
+    /// vector2 holding the value being read from the move input
+    /// </summary>
+    public Vector2 moveInput { get; private set; }
+    /// <summary>
+    /// vector2 holding the value being read from the lookArround input
+    /// </summary>
+    public Vector2 lookArroundInput { get; private set; }
 
     /// <summary>
-    /// on network spawn, initialize the input action map if the player is the owner of this object.
+    /// the size of the buffer
+    /// </summary>
+    private readonly static int BUFFER_SIZE = 1024;
+    /// <summary>
+    /// an array container the input
+    /// </summary>
+    public PlayerInputSerialization[] positionBuffer = new PlayerInputSerialization[BUFFER_SIZE];
+    // ticks starts at 1 , the array starts at 0 -> we have to deduct 1 to keep the ticks and the array coherent
+    // modulo 1024 is to avoid index out of bound exception 
+    private int TickToIndex(int tick) => ((tick - 1) < 0 ? 0 : ((tick - 1) % 1024));
+
+    /// <summary>
+    /// subscribe to action events .
     /// </summary>
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         if (!IsOwner) return;
-
         InitActionMap();
+        NetworkManager.NetworkTickSystem.Tick += OnNetworkTick;
+    }
 
+    /// <summary>
+    ///  unsubscribe from the input action events to avoid memory leaks and unintended behavior.
+    /// </summary>
+    public override void OnNetworkDespawn()
+    {
+        moveAction.performed -= ctx => ActionMovePerformed(ctx.ReadValue<Vector2>());
+        lookArroundAction.performed -= ctx => ActionLookArroundPerformed(ctx.ReadValue<Vector2>());
+        fireAction.performed -= ctx => ActionFirePerformed();
+        reloadAction.performed -= ctx => ActionReloadingPerformed();
+        changeWeaponAction.performed -= ctx => ActionChangeWeaponPerformed();
+
+        NetworkManager.NetworkTickSystem.Tick -= OnNetworkTick;
+    }
+
+    private void OnNetworkTick()
+    {
+        if (moveAction != null)
+        {
+            moveInput = moveAction.IsInProgress() ? moveAction.ReadValue<Vector2>() : new Vector2(0, 0);
+            ActionMovePerformed(moveInput);
+        }
+
+        if (lookArroundAction != null && lookArroundAction.IsInProgress())
+        {
+            lookArroundInput = lookArroundAction.ReadValue<Vector2>();
+            ActionLookArroundPerformed(lookArroundInput);
+        }
     }
 
     /// <summary>
@@ -76,41 +121,13 @@ public class PlayerController : NetworkBehaviour
         changeWeaponAction.performed += ctx => ActionChangeWeaponPerformed();
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-    
-        if (moveAction != null && moveAction.IsInProgress())
-        {
-            ActionMovePerformed(moveAction.ReadValue<Vector2>());
-        }
-        if (lookArroundAction != null && lookArroundAction.IsInProgress())
-        {
-            ActionLookArroundPerformed(lookArroundAction.ReadValue<Vector2>());
-        }
-    }
-
-    /// <summary>
-    /// on network despawn, unsubscribe from the input action events to avoid memory leaks and unintended behavior.
-    /// </summary>
-    public override void OnNetworkDespawn()
-    {
-        base.OnNetworkDespawn();
-        if (!IsOwner) return;
-        moveAction.performed -= ctx => ActionMovePerformed(ctx.ReadValue<Vector2>());
-        lookArroundAction.performed -= ctx => ActionLookArroundPerformed(ctx.ReadValue<Vector2>());
-        fireAction.performed -= ctx => ActionFirePerformed();
-        reloadAction.performed -= ctx => ActionReloadingPerformed();
-        changeWeaponAction.performed -= ctx => ActionChangeWeaponPerformed();
-    }
-
     /// <summary>
     /// handle action movement
     /// </summary>
     /// <param name="moveInput"></param>
-    private void ActionMovePerformed(Vector2 moveInput)
+    private Vector3 ActionMovePerformed(Vector2 moveInput)
     {
-        playerInputScriptableObject.MoveCharacter(characterController, moveInput);
+        return playerInputScriptableObject.MoveCharacter(characterController, moveInput);
     }
 
     /// <summary>
@@ -119,7 +136,7 @@ public class PlayerController : NetworkBehaviour
     /// <param name="lookInput"></param>
     private void ActionLookArroundPerformed(Vector2 lookInput)
     {
-        playerInputScriptableObject.LookAround(cameraTransform, lookInput);
+      //  playerInputScriptableObject.LookAround(cameraTransform, lookInput);
     }
 
     /// <summary>
@@ -145,5 +162,4 @@ public class PlayerController : NetworkBehaviour
     {
         playerInputScriptableObject.ChangeWeapon(weaponController);
     }
-   
 }
