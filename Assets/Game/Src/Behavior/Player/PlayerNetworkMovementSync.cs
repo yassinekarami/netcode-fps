@@ -12,6 +12,16 @@ public class PlayerNetworkMovementSync : NetworkBehaviour
     [SerializeField]
     private CharacterController simulateCharacterController;
     /// <summary>
+    /// transform to simulate camera rotation
+    /// </summary>
+    [SerializeField]
+    private Transform simulationCameraTransform;
+    /// <summary>
+    /// player input scriptable object containing the logic to move / rotate the controller
+    /// </summary>
+    [SerializeField]
+    private PlayerInputScriptableObject playerInputScriptableObject;
+    /// <summary>
     /// the playerController attached to the gameobject
     /// </summary>
     [SerializeField] PlayerController playerController;
@@ -22,13 +32,11 @@ public class PlayerNetworkMovementSync : NetworkBehaviour
     /// <summary>
     /// an array container the input
     /// </summary>
-    private PlayerInputSerialization[] positionBuffer = new PlayerInputSerialization[BUFFER_SIZE];
+    private PlayerInputSerialization[] inputBuffer = new PlayerInputSerialization[BUFFER_SIZE];
     // ticks starts at 1 , the array starts at 0 -> we have to deduct 1 to keep the ticks and the array coherent
     // modulo 1024 is to avoid index out of bound exception 
     private int TickToIndex(int tick) => ((tick - 1) < 0 ? 0 : ( (tick-1)% 1024) );
 
-    [Header("Movement")]
-    [SerializeField] private float moveSpeed = 5f;
 
     /// <summary>
     /// called when the player spawn
@@ -56,7 +64,7 @@ public class PlayerNetworkMovementSync : NetworkBehaviour
     /// </summary>
     private void CaptureAndSendInput()
     {
-        positionBuffer.SetValue(new PlayerInputSerialization
+        inputBuffer.SetValue(new PlayerInputSerialization
         {
             movement = playerController.moveInput,
             rotation = playerController.lookArroundInput,
@@ -64,7 +72,7 @@ public class PlayerNetworkMovementSync : NetworkBehaviour
         }, TickToIndex(NetworkManager.LocalTime.Tick));
 
  
-        Debug.Log($"storing value {playerController.moveInput} at tick {NetworkManager.LocalTime.Tick} at index {TickToIndex(NetworkManager.LocalTime.Tick)}");
+        //Debug.Log($"storing value {playerController.moveInput} at tick {NetworkManager.LocalTime.Tick} at index {TickToIndex(NetworkManager.LocalTime.Tick)}");
     }
 
     /// <summary>
@@ -91,14 +99,14 @@ public class PlayerNetworkMovementSync : NetworkBehaviour
     private void SimulateMovementAndReconciliate()
     {
         int index = TickToIndex(NetworkManager.LocalTime.Tick);
-        Vector2 moveValue = positionBuffer[index].movement;
+        Vector2 moveValue = inputBuffer[index].movement;
 
-        Debug.Log($" Tick {NetworkManager.LocalTime.Tick} buffer value at index {index} : {positionBuffer[index].movement}");
 
-        Vector3 movementVector = (simulateCharacterController.transform.right * moveValue.x + simulateCharacterController.transform.forward * moveValue.y) * 5f;
+        // Debug.Log($" Tick {NetworkManager.LocalTime.Tick} buffer value at index {index} : {positionBuffer[index].movement}");
+        playerInputScriptableObject.MoveCharacter(simulateCharacterController, inputBuffer[index].movement);
+        playerInputScriptableObject.RotateCharacter(simulateCharacterController.transform, simulationCameraTransform, inputBuffer[index].rotation);
 
-        simulateCharacterController.Move(movementVector * Time.deltaTime);
-        ReconcilitationClientRpc(simulateCharacterController.transform.position, NetworkManager.LocalTime.Tick);
+        ReconcilitationClientRpc(simulateCharacterController.transform.position, simulationCameraTransform.transform.rotation, NetworkManager.LocalTime.Tick);
     }
 
 
@@ -108,34 +116,33 @@ public class PlayerNetworkMovementSync : NetworkBehaviour
     /// <param name="serverPosition">The authoritative position computed by the server.</param>
     /// <param name="serverTick">The tick this position corresponds to.</param>
     [Rpc(SendTo.Owner)]
-    public void ReconcilitationClientRpc(Vector3 simulatedPosition, int serverTick)
+    public void ReconcilitationClientRpc(Vector3 simulatedPosition, Quaternion simulatedRotation, int serverTick)
     {
+        bool positionMismatch = Vector3.Distance(simulatedPosition, transform.position) > 1f;
+        bool rotationMismatch = Quaternion.Angle(simulatedRotation, transform.rotation) > 1f;
 
-        if (Vector3.Distance(simulatedPosition, gameObject.transform.position) > 1f)
-        {
-            Debug.Log($"client {OwnerClientId} and server must reconcile . predicted {gameObject.transform.position} simulated {simulatedPosition}");
-            // move the gameobject position at the simulatedPosition
-            gameObject.transform.position = simulatedPosition;
-            int currentTick = NetworkManager.LocalTime.Tick;
-            // replay the input before the reconciliation happen to smooth the movement
-            for (int t = serverTick + 1; t <= currentTick; t++)
-            {
-                int replayIndex = TickToIndex(t);
-                Vector2 replayInput = positionBuffer[replayIndex].movement;
+     //   Debug.Log($"simulated rotation {simulatedRotation} real rotation {transform.rotation}");
 
-                Vector3 movementValue = (transform.right * replayInput.x + transform.forward * replayInput.y) * moveSpeed * Time.fixedDeltaTime;
-                playerController.GetComponent<CharacterController>().Move(movementValue);
-
-                positionBuffer[replayIndex].movement = gameObject.transform.position;
-            }
-
-        }
-        else
+        if (!positionMismatch && !rotationMismatch)
         {
             Debug.Log("client and server are in the same position");
+            return;
+        }
 
+        transform.position = simulatedPosition;
+     //   transform.rotation = simulatedRotation;
+
+        int currentTick = NetworkManager.LocalTime.Tick;
+        var characterController = playerController.GetComponent<CharacterController>();
+
+        for (int t = serverTick + 1; t <= currentTick; t++)
+        {
+            int replayIndex = TickToIndex(t);
+            Vector2 replayMove = inputBuffer[replayIndex].movement;
+            Vector2 replayLook = inputBuffer[replayIndex].rotation;
+
+            playerInputScriptableObject.RotateCharacter(transform, simulationCameraTransform, replayLook);
+            playerInputScriptableObject.MoveCharacter(characterController, replayMove);
         }
     }
-
-
 }

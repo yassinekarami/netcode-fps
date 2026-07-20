@@ -1,5 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEditor.FilePathAttribute;
 
 public class ObjectPoolManager : NetworkBehaviour
 {
@@ -39,6 +41,23 @@ public class ObjectPoolManager : NetworkBehaviour
         else if(name == "DiscProjectile")
         {
             //   discProjecileObjectPool.SpawnObject(position, rotation, ownerId);
+            Debug.LogWarning("disc projectile is not available");
+        }
+    }
+
+    public void DespawnObject(string name, AbstractPooledObject gameObject)
+    {
+        if (name == "BlasterProjectile")
+        {
+            blasterProjecileObjectPool.Despawn((BlasterProjectilePooledObject)gameObject);
+        }
+        else if (name == "ShotgunProjectile")
+        {
+            shotgunProjecileObjectPool.Despawn((ShotgunProjectilePooledObject)gameObject);
+        }
+        else if (name == "DiscProjectile")
+        {
+            discProjecileObjectPool.Despawn((DiscProjectilePooledObject)gameObject);
             Debug.LogWarning("disc projectile is not available");
         }
     }

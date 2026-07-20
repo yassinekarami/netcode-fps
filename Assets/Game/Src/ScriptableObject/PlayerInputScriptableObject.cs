@@ -15,22 +15,22 @@ public class PlayerInputScriptableObject : ScriptableObject
 
     private float pitch = 0f;
 
-    public Vector3 MoveCharacter(CharacterController characterController, Vector2 moveValue)
+    public void MoveCharacter(CharacterController characterController, Vector2 moveValue)
     {
         // Direction relative à l'orientation du perso (pas espace monde)
         Vector3 movementVector = (characterController.transform.right * moveValue.x + characterController.transform.forward * moveValue.y) * moveSpeed;
-
         characterController.Move(movementVector * Time.deltaTime);
-        return characterController.transform.position;
     }
 
-    public void LookAround(Transform cameraTransform, Vector2 lookValue)
+    public void RotateCharacter(Transform characterTransform, Transform cameraTransform, Vector2 lookValue)
     {
         float mouseX = lookValue.x * lookSpeed;
         float mouseY = lookValue.y * lookSpeed;
-        // Rotation du personnage sur l'axe Y (gauche/droite)
-        cameraTransform.parent.Rotate(Vector3.up * mouseX);
-        // Rotation de la caméra sur l'axe X (haut/bas)
+
+        // Rotation du personnage (Player) sur l'axe Y
+        characterTransform.Rotate(Vector3.up * mouseX);
+
+        // Rotation de la caméra sur l'axe X (pitch)
         pitch -= mouseY;
         pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
         cameraTransform.localRotation = Quaternion.Euler(pitch, 0f, 0f);

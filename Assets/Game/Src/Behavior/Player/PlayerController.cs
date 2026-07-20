@@ -12,9 +12,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     private WeaponController weaponController;
     [SerializeField]
-    private Transform aimPoint;
-    [SerializeField]
-    private Transform cameraTransform;
+    private GameObject playerCamera;
 
 
     [Header("InputAction")]
@@ -23,16 +21,6 @@ public class PlayerController : NetworkBehaviour
     private InputAction fireAction;
     private InputAction reloadAction;
     private InputAction changeWeaponAction;
-
-
-    [Header("Movement")]
-    [SerializeField] private float moveSpeed = 5f;
-
-    [Header("Look")]
-    [SerializeField] private float lookSpeed = 2f;
-    [SerializeField] private float minPitch = -80f;
-    [SerializeField] private float maxPitch = 80f;
-
    
 
     private string inputToEnable = "keyboard";
@@ -46,18 +34,6 @@ public class PlayerController : NetworkBehaviour
     public Vector2 lookArroundInput { get; private set; }
 
     /// <summary>
-    /// the size of the buffer
-    /// </summary>
-    private readonly static int BUFFER_SIZE = 1024;
-    /// <summary>
-    /// an array container the input
-    /// </summary>
-    public PlayerInputSerialization[] positionBuffer = new PlayerInputSerialization[BUFFER_SIZE];
-    // ticks starts at 1 , the array starts at 0 -> we have to deduct 1 to keep the ticks and the array coherent
-    // modulo 1024 is to avoid index out of bound exception 
-    private int TickToIndex(int tick) => ((tick - 1) < 0 ? 0 : ((tick - 1) % 1024));
-
-    /// <summary>
     /// subscribe to action events .
     /// </summary>
     public override void OnNetworkSpawn()
@@ -65,6 +41,7 @@ public class PlayerController : NetworkBehaviour
         base.OnNetworkSpawn();
         if (!IsOwner) return;
         InitActionMap();
+        playerCamera.SetActive(true);
         NetworkManager.NetworkTickSystem.Tick += OnNetworkTick;
     }
 
@@ -74,7 +51,7 @@ public class PlayerController : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         moveAction.performed -= ctx => ActionMovePerformed(ctx.ReadValue<Vector2>());
-        lookArroundAction.performed -= ctx => ActionLookArroundPerformed(ctx.ReadValue<Vector2>());
+        lookArroundAction.performed -= ctx => ActionRotateCharacterPerformed(ctx.ReadValue<Vector2>());
         fireAction.performed -= ctx => ActionFirePerformed();
         reloadAction.performed -= ctx => ActionReloadingPerformed();
         changeWeaponAction.performed -= ctx => ActionChangeWeaponPerformed();
@@ -86,14 +63,14 @@ public class PlayerController : NetworkBehaviour
     {
         if (moveAction != null)
         {
-            moveInput = moveAction.IsInProgress() ? moveAction.ReadValue<Vector2>() : new Vector2(0, 0);
+            moveInput = moveAction.IsInProgress() ? moveAction.ReadValue<Vector2>() : Vector2.zero;
             ActionMovePerformed(moveInput);
         }
 
-        if (lookArroundAction != null && lookArroundAction.IsInProgress())
+        if (lookArroundAction != null )
         {
-            lookArroundInput = lookArroundAction.ReadValue<Vector2>();
-            ActionLookArroundPerformed(lookArroundInput);
+            lookArroundInput = lookArroundAction.IsInProgress()? lookArroundAction.ReadValue<Vector2>() : Vector2.zero;
+            ActionRotateCharacterPerformed(lookArroundInput);
         }
     }
 
@@ -115,7 +92,7 @@ public class PlayerController : NetworkBehaviour
         Debug.Log("changeWeaponAction " + changeWeaponAction);
         Debug.Log("inputToEnable " + inputToEnable);
         moveAction.performed += ctx => ActionMovePerformed(ctx.ReadValue<Vector2>());
-        lookArroundAction.performed += ctx => ActionLookArroundPerformed(ctx.ReadValue<Vector2>());
+        lookArroundAction.performed += ctx => ActionRotateCharacterPerformed(ctx.ReadValue<Vector2>());
         fireAction.performed += ctx => ActionFirePerformed();
         reloadAction.performed += ctx => ActionReloadingPerformed();
         changeWeaponAction.performed += ctx => ActionChangeWeaponPerformed();
@@ -125,18 +102,18 @@ public class PlayerController : NetworkBehaviour
     /// handle action movement
     /// </summary>
     /// <param name="moveInput"></param>
-    private Vector3 ActionMovePerformed(Vector2 moveInput)
+    private void ActionMovePerformed(Vector2 moveInput)
     {
-        return playerInputScriptableObject.MoveCharacter(characterController, moveInput);
+        playerInputScriptableObject.MoveCharacter(characterController, moveInput);
     }
 
     /// <summary>
-    /// handle look arround movement
+    /// handle character rotation
     /// </summary>
     /// <param name="lookInput"></param>
-    private void ActionLookArroundPerformed(Vector2 lookInput)
+    private void ActionRotateCharacterPerformed(Vector2 lookInput)
     {
-      //  playerInputScriptableObject.LookAround(cameraTransform, lookInput);
+        playerInputScriptableObject.RotateCharacter(gameObject.transform, playerCamera.transform, lookInput);
     }
 
     /// <summary>

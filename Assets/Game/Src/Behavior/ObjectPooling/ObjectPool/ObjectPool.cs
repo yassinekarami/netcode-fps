@@ -48,7 +48,9 @@ public class ObjectPool<T> where T: AbstractPooledObject
     public void Despawn(T obj)
     {
         obj.gameObject.SetActive(false);
+        spawnedObjects.Remove(obj);
         objectPool.Enqueue(obj);
+        Debug.Log($"object in the pool. Remaining: {objectPool.Count}");
     }
 
 }
