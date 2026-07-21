@@ -9,16 +9,26 @@ struct weaponDataStruct
 {
     public int currentAmmo { get; set; }
     public int magazineSize { get; set; }
-    public int remainingAmmo { get; set; }
+    public int maxMagazine { get; set; }
 
     public bool hasBeenInitialized { get; set; }
 
 }
 public class Weapon : NetworkBehaviour
 {
-
+    /// <summary>
+    /// event chanel where event related to weapon ( firing / reloading ... ) will be published
+    /// </summary>
+    [SerializeField]
+    private LocalUIEventChanelScriptableObject localUIEventChanel;
+    /// <summary>
+    /// scriptable object holding the initial weapon data
+    /// </summary>
     [SerializeField]
     private WeaponScriptableObject weaponData;
+    /// <summary>
+    /// structure holding a copy of the weapon data for the weapon's firing / reloading logic
+    /// </summary>
     weaponDataStruct weaponAmmo;
 
     public override void OnNetworkSpawn()
@@ -32,11 +42,25 @@ public class Weapon : NetworkBehaviour
         if (!weaponAmmo.hasBeenInitialized)
         {
             weaponAmmo.currentAmmo = weaponData.magazineSize;
-            weaponAmmo.remainingAmmo = weaponData.maxAmmo;
+            weaponAmmo.maxMagazine = weaponData.maxMagazine;
             weaponAmmo.magazineSize = weaponData.magazineSize;
             weaponAmmo.hasBeenInitialized = true;
         }
 
+        localUIEventChanel.RaiseUpdateAmmoUIEvent(ToPercentage(weaponAmmo.currentAmmo, weaponAmmo.magazineSize));
+        localUIEventChanel.RaiseUpdateMagazineNumberUIEvent(weaponAmmo.maxMagazine);
+
+    }
+
+    /// <summary>
+    /// return currentValue percentage of maxValue
+    /// </summary>
+    /// <param name="currentValue"></param>
+    /// <param name="maxValue"></param>
+    /// <returns></returns>
+    private float ToPercentage(float currentValue, float maxValue)
+    {
+        return currentValue / maxValue;
     }
 
     /// <summary>
@@ -58,6 +82,7 @@ public class Weapon : NetworkBehaviour
         if (weaponAmmo.currentAmmo > 0)
         {
             weaponAmmo.currentAmmo--;
+            localUIEventChanel.RaiseUpdateAmmoUIEvent(ToPercentage(weaponAmmo.currentAmmo, weaponAmmo.magazineSize));
             ObjectPoolManager.instance.SpawnObject(weaponData.projectileData.projectileName, transform.position, transform.rotation, OwnerClientId);
             ApplyWeaponFireVisualClientRpc();
         }
@@ -77,8 +102,6 @@ public class Weapon : NetworkBehaviour
     {
         Debug.Log($"Client {OwnerClientId} applying weapon fire visual effect");
         DummyObjectPoolManager.instance.SpawnObject(weaponData.projectileData.projectileName, transform.position, transform.rotation, OwnerClientId);
-      //  Instantiate(weaponData.projectileData.dummyProjectile, transform.position, transform.rotation);
-
     }
 
     /// <summary>
@@ -96,18 +119,29 @@ public class Weapon : NetworkBehaviour
             return;
         }
      
-        ReloadWeapon();
+        bool hasReloadingSucceed = ReloadWeapon();
+        if (hasReloadingSucceed) 
+        {
+            localUIEventChanel.RaiseUpdateAmmoUIEvent(ToPercentage(weaponAmmo.currentAmmo, weaponAmmo.magazineSize));
+            localUIEventChanel.RaiseUpdateMagazineNumberUIEvent(weaponAmmo.maxMagazine);
+        }
+
         Debug.Log($"Reloaded weapon: {weaponData.weaponName}. Current ammo: {weaponAmmo.currentAmmo}");
     }
 
     /// <summary>
     /// reload the weapon by resetting the current ammo to the magazine size and reducing the max ammo accordingly.
     /// </summary>
-    private void ReloadWeapon()
+    private bool ReloadWeapon()
     {
-        // Logique de rechargement ici
-        weaponAmmo.currentAmmo = weaponData.magazineSize;
-        weaponAmmo.remainingAmmo -= weaponAmmo.magazineSize;
+        if (weaponAmmo.maxMagazine > 0)
+        {
+            weaponAmmo.currentAmmo = weaponData.magazineSize;
+            weaponAmmo.maxMagazine--;
+            return true;
+        }
+        return false;
+
     }
 
 }

@@ -12,6 +12,8 @@ public class WeaponController : NetworkBehaviour
     [SerializeField]
     private Transform weaponHolder;
 
+    private Weapon weaponComponent;
+
     public override void OnNetworkSpawn()
     {
 
@@ -22,6 +24,8 @@ public class WeaponController : NetworkBehaviour
         currentWeapon = weapons[currentWeaponIndex];
         DisableUnequipedWeapon(currentWeaponIndex);
         ApplyWeaponVisual(-1, currentWeaponIndex);
+        weaponComponent = currentWeapon.GetComponent<Weapon>();
+
     }
 
     /// <summary>
@@ -53,14 +57,21 @@ public class WeaponController : NetworkBehaviour
     }
 
     /// <summary>
-    /// 
+    /// send a request to the server to fire
     /// </summary>
     public void RequestWeaponFire()
     {
-        currentWeapon.TryGetComponent<Weapon>(out var weaponComponent);
-        Debug.Log($"weapon component {weaponComponent}");
-        weaponComponent?.RequestWeaponFireServerRpc();
+
+        Debug.Log($"RequestWeaponFire weapon component {weaponComponent}");
+        weaponComponent.RequestWeaponFireServerRpc();
        
+    }
+
+    public void RequestWeaponReload()
+    {
+     
+        Debug.Log($"RequestWeaponReload weapon component {weaponComponent}");
+        weaponComponent.RequestReloadServerRpc();
     }
 
     /// <summary>

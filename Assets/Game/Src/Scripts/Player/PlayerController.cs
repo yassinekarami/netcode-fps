@@ -58,7 +58,9 @@ public class PlayerController : NetworkBehaviour
 
         NetworkManager.NetworkTickSystem.Tick -= OnNetworkTick;
     }
-
+    /// <summary>
+    /// method called at each tick used to handle the input
+    /// </summary>
     private void OnNetworkTick()
     {
         if (moveAction != null)
@@ -129,7 +131,7 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     private void ActionReloadingPerformed()
     {
-        playerInputScriptableObject.ReloadWeapon();
+        playerInputScriptableObject.ReloadWeapon(weaponController);
     }
 
     /// <summary>

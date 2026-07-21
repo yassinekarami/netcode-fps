@@ -15,5 +15,5 @@ MonoBehaviour:
   weaponName: Shotgun
   projectileData: {fileID: 11400000, guid: b0ffcc612b6455e4b93a6a92db8c2f3a, type: 2}
   fireRate: 1
-  maxAmmo: 30
+  maxMagazine: 6
   magazineSize: 5

@@ -1,3 +1,4 @@
+using Unity.FPS.Game;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -46,9 +47,10 @@ public class PlayerInputScriptableObject : ScriptableObject
         weaponController.RequestWeaponFire();
     }
 
-    public void ReloadWeapon()
+    public void ReloadWeapon(WeaponController weaponController)
     {
         Debug.Log("reloading");
+        weaponController.RequestWeaponReload();
     }
 
     public void ChangeWeapon(WeaponController weaponController)

@@ -435,6 +435,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   ShowTopMostFoldoutHeaderGroup: 1
+  localUIEventChanel: {fileID: 11400000, guid: 3bf207760cd779f408b73ce593520e93, type: 2}
   weaponData: {fileID: 11400000, guid: 361920c7637e54f4eb6d4914227f8703, type: 2}
 --- !u!1 &2867801751256125023
 GameObject:

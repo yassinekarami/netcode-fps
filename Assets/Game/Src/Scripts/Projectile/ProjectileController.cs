@@ -18,4 +18,14 @@ public class ProjectileController : NetworkBehaviour
             timer = 0;
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!IsServer) return;
+
+        other.gameObject.TryGetComponent<IDammagable>(out IDammagable component);
+        component?.TakeDamage(data.damage);
+
+
+    }
 }

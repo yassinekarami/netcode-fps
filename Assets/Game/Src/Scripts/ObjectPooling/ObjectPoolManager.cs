@@ -1,7 +1,5 @@
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEditor.FilePathAttribute;
 
 public class ObjectPoolManager : NetworkBehaviour
 {
@@ -18,13 +16,13 @@ public class ObjectPoolManager : NetworkBehaviour
         if (instance == null) instance = this;
  
         blasterProjecileObjectPool = new BlasterProctileObjectPool();
-        blasterProjecileObjectPool.Initialize("Prefabs/Projectiles/Real/real_projectile_Blaster", 3, instance.gameObject.transform);
+        blasterProjecileObjectPool.Initialize("Prefabs/Projectiles/Real/real_projectile_Blaster", 10, instance.gameObject.transform);
 
         shotgunProjecileObjectPool = new ShotgunProjectileObjectPool();
-        shotgunProjecileObjectPool.Initialize("Prefabs/Projectiles/Real/real_projectile_Shotgun", 3, instance.gameObject.transform);
+        shotgunProjecileObjectPool.Initialize("Prefabs/Projectiles/Real/real_projectile_Shotgun", 10, instance.gameObject.transform);
 
         discProjecileObjectPool = new DiscProjectileObjectPool();
-        discProjecileObjectPool.Initialize("Prefabs/Projectiles/Real/real_projectile_Disc", 3, instance.gameObject.transform);
+        discProjecileObjectPool.Initialize("Prefabs/Projectiles/Real/real_projectile_Disc", 10, instance.gameObject.transform);
     }
 
 
