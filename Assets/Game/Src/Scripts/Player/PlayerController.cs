@@ -39,9 +39,12 @@ public class PlayerController : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+        playerCamera.SetActive(IsOwner);
+        playerCamera.tag = "MainCamera";
         if (!IsOwner) return;
         InitActionMap();
-        playerCamera.SetActive(true);
+  
+      
         NetworkManager.NetworkTickSystem.Tick += OnNetworkTick;
     }
 
@@ -106,6 +109,7 @@ public class PlayerController : NetworkBehaviour
     /// <param name="moveInput"></param>
     private void ActionMovePerformed(Vector2 moveInput)
     {
+        if (!IsOwner) { return; }
         playerInputScriptableObject.MoveCharacter(characterController, moveInput);
     }
 
@@ -115,6 +119,7 @@ public class PlayerController : NetworkBehaviour
     /// <param name="lookInput"></param>
     private void ActionRotateCharacterPerformed(Vector2 lookInput)
     {
+        if (!IsOwner) { return; }
         playerInputScriptableObject.RotateCharacter(gameObject.transform, playerCamera.transform, lookInput);
     }
 
@@ -123,6 +128,7 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     private void ActionFirePerformed()
     {
+        if (!IsOwner) { return; }
         playerInputScriptableObject.FireWeapon(weaponController);
     }
 
@@ -131,6 +137,7 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     private void ActionReloadingPerformed()
     {
+        if (!IsOwner) { return; }
         playerInputScriptableObject.ReloadWeapon(weaponController);
     }
 
@@ -139,6 +146,7 @@ public class PlayerController : NetworkBehaviour
     /// </summary>
     private void ActionChangeWeaponPerformed()
     {
+        if (!IsOwner) { return; }
         playerInputScriptableObject.ChangeWeapon(weaponController);
     }
 }

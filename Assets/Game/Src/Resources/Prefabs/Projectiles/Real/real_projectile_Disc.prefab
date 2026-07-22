@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 1892852463928468597}
   - component: {fileID: 8519497425030698089}
   - component: {fileID: 1289623275838284554}
-  - component: {fileID: -6273226958830526476}
+  - component: {fileID: 858891995901916385}
   m_Layer: 0
   m_Name: real_projectile_Disc
   m_TagString: Untagged
@@ -253,6 +253,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileController
   ShowTopMostFoldoutHeaderGroup: 1
+  data: {fileID: 11400000, guid: f9189ea6ff0207344a9ded941e054a95, type: 2}
 --- !u!65 &1289623275838284554
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -274,7 +275,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5290978, y: 0.06906335, z: 0.5242504}
   m_Center: {x: 0.000000014901161, y: 0.0000000018626451, z: 0.00000016391277}
---- !u!114 &-6273226958830526476
+--- !u!114 &858891995901916385
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -283,9 +284,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5475371552304389242}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3e8c2a69864a88498ce8ca90cb5a011, type: 3}
+  m_Script: {fileID: 11500000, guid: f24cf56a36ddfd7498dfde3a7a54ba5a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BlasterProjectilePooledObject
+  m_EditorClassIdentifier: Assembly-CSharp::DiscProjectilePooledObject
   ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &5874933365223601065
 GameObject:

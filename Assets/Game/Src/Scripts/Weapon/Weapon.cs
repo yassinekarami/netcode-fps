@@ -17,10 +17,20 @@ struct weaponDataStruct
 public class Weapon : NetworkBehaviour
 {
     /// <summary>
-    /// event chanel where event related to weapon ( firing / reloading ... ) will be published
+    /// list of gameobject childs to enable or disable
+    /// </summary>
+    [SerializeField]
+    private GameObject[] componentToDisabledEnable;
+    /// <summary>
+    /// event chanel where event related to UI ( firing / reloading ... ) will be published
     /// </summary>
     [SerializeField]
     private LocalUIEventChanelScriptableObject localUIEventChanel;
+    /// <summary>
+    /// event chanel where event related to weapon switch will be published
+    /// </summary>
+    [SerializeField]
+    private WeaponSwitchEventChanelScriptableObject weaponSwitchEventChanel;
     /// <summary>
     /// scriptable object holding the initial weapon data
     /// </summary>
@@ -34,9 +44,15 @@ public class Weapon : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-
+        Debug.Log($"weapon has been spawned {gameObject.name} {NetworkBehaviourId}");
+        weaponSwitchEventChanel.AddListeners(this);
     }
 
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        weaponSwitchEventChanel.RemoveListeners(this);
+    }
     private void OnEnable()
     {
         if (!weaponAmmo.hasBeenInitialized)
@@ -52,15 +68,24 @@ public class Weapon : NetworkBehaviour
 
     }
 
-    /// <summary>
-    /// return currentValue percentage of maxValue
-    /// </summary>
-    /// <param name="currentValue"></param>
-    /// <param name="maxValue"></param>
-    /// <returns></returns>
-    private float ToPercentage(float currentValue, float maxValue)
+    public void SetIsGameobjectActive(ulong clientId, string objectToEnable)
     {
-        return currentValue / maxValue;
+        if (clientId != OwnerClientId) return;
+        Debug.Log($"gameobject to enable {objectToEnable} current gameobject name {gameObject.name}");
+        if  (gameObject.name == objectToEnable)
+        {
+            foreach (GameObject go in componentToDisabledEnable)
+            {
+                go.SetActive(true);
+            }
+        }
+        else
+        {
+            foreach (GameObject go in componentToDisabledEnable)
+            {
+                go.SetActive(false);
+            }
+        }
     }
 
     /// <summary>
@@ -141,7 +166,17 @@ public class Weapon : NetworkBehaviour
             return true;
         }
         return false;
+    }
 
+    /// <summary>
+    /// return currentValue percentage of maxValue
+    /// </summary>
+    /// <param name="currentValue"></param>
+    /// <param name="maxValue"></param>
+    /// <returns></returns>
+    private float ToPercentage(float currentValue, float maxValue)
+    {
+        return currentValue / maxValue;
     }
 
 }

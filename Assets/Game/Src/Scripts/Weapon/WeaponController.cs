@@ -1,40 +1,55 @@
 using NUnit.Framework;
 using System;
 using Unity.Netcode;
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class WeaponController : NetworkBehaviour
 {
     public GameObject[] weapons;
     private GameObject currentWeapon; // état local, pas de NetworkVariable
-    private int currentWeaponIndex = 0; // état local, pas de NetworkVariable
+    public NetworkVariable<int> weaponIndex = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner); 
 
     [SerializeField]
     private Transform weaponHolder;
 
-    private Weapon weaponComponent;
-
+    /// <summary>
+    /// event chanel where event related to weapon switch will be published
+    /// </summary>
+    [SerializeField]
+    private WeaponSwitchEventChanelScriptableObject weaponSwitchEventChanel;
     public override void OnNetworkSpawn()
     {
 
         base.OnNetworkSpawn();
-        Debug.LogWarning($"WeaponController spawned for client {OwnerClientId}. Weapons list size : {weapons.Length} Current weapon index: {currentWeaponIndex}");
-        // Applique l'état initial pour tout le monde, y compris les late-joiners
+        Debug.LogWarning($"WeaponController spawned for client {OwnerClientId}. Weapons list size : {weapons.Length} Current weapon index: {weaponIndex.Value}");
+    
+        weaponIndex.OnValueChanged += SwitchWeapon;
+        SwitchWeapon(0, 1);
+      //  DisableUnequipedWeapon(weaponIndex.Value);
+    }
 
-        currentWeapon = weapons[currentWeaponIndex];
-        DisableUnequipedWeapon(currentWeaponIndex);
-        ApplyWeaponVisual(-1, currentWeaponIndex);
-        weaponComponent = currentWeapon.GetComponent<Weapon>();
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        weaponIndex.OnValueChanged -= SwitchWeapon;
+    }
 
+    public void SwitchWeapon(int previousValue, int newValue)
+    {
+        int index = IsValidWeaponIndex(newValue) ? newValue : previousValue;
+        int previousIndex = IsValidWeaponIndex(previousValue) ? previousValue : 0;
+        Debug.LogWarning($"Client {OwnerClientId} requested weapon change to index {newValue}");
+        RequestWeaponChangeServerRpc(OwnerClientId, previousIndex, index);
     }
 
     /// <summary>
     /// select the next weapon in the array, by calculating the next index and sending a request to the server to change the weapon.
     /// </summary>
-    public void SelectNextWeapon()
+    public void SelectNextWeaponIndex()
     {
-        int nextIndex = currentWeaponIndex == weapons.Length - 1 ? 0 : currentWeaponIndex + 1;
-        RequestWeaponChangeServerRpc(currentWeaponIndex, nextIndex);
+        weaponIndex.Value = weaponIndex.Value == weapons.Length - 1 ? 0 : weaponIndex.Value + 1;
     }
     /// <summary>
     /// execute the weapon change on the server, validate the request and update the state, then notify all clients of the change.
@@ -42,18 +57,13 @@ public class WeaponController : NetworkBehaviour
     /// <param name="requestedIndex"></param>
     /// <param name="rpcParams"></param>
     [Rpc(SendTo.Server)]
-    private void RequestWeaponChangeServerRpc(int previousIndex, int requestedIndex)
+    private void RequestWeaponChangeServerRpc(ulong clientId, int previousValue, int requestedIndex)
     {
-        if (!IsValidWeaponIndex(requestedIndex))
-        {
-            Debug.LogWarning($"Client {OwnerClientId} requested invalid weapon index {requestedIndex}");
-            return;
-        }
-
         Debug.LogWarning($"Client {OwnerClientId} requested weapon change to index {requestedIndex}");
-        currentWeaponIndex = requestedIndex;
         currentWeapon = weapons[requestedIndex];
-        UpdateWeaponClientRpc(previousIndex, currentWeaponIndex);
+        Debug.Log($"Client  {OwnerClientId} requested {weapons[requestedIndex]} current weapon {currentWeapon}");
+        UpdateWeaponClientRpc(clientId, requestedIndex);
+
     }
 
     /// <summary>
@@ -61,17 +71,19 @@ public class WeaponController : NetworkBehaviour
     /// </summary>
     public void RequestWeaponFire()
     {
-
-        Debug.Log($"RequestWeaponFire weapon component {weaponComponent}");
+        currentWeapon.TryGetComponent<Weapon>(out Weapon weaponComponent);
+        Debug.Log($"RequestWeaponFire weapon component {weaponComponent} {weaponComponent.NetworkBehaviourId} {weaponComponent.IsSpawned}");
         weaponComponent.RequestWeaponFireServerRpc();
        
     }
-
+    /// <summary>
+    /// send a request to the server to reload the weapon
+    /// </summary>
     public void RequestWeaponReload()
     {
-     
+        currentWeapon.TryGetComponent<Weapon>(out Weapon weaponComponent);
         Debug.Log($"RequestWeaponReload weapon component {weaponComponent}");
-        weaponComponent.RequestReloadServerRpc();
+        weaponComponent?.RequestReloadServerRpc();
     }
 
     /// <summary>
@@ -80,49 +92,24 @@ public class WeaponController : NetworkBehaviour
     /// <param name="previousIndex"></param>
     /// <param name="currentIndex"></param>
 
-    [Rpc(SendTo.ClientsAndHost)]
-    private void UpdateWeaponClientRpc(int previousIndex, int currentIndex)
+    [Rpc(SendTo.Everyone)]
+    private void UpdateWeaponClientRpc(ulong clientId, int requestedIndex)
     {
-        currentWeaponIndex = currentIndex;
-        currentWeapon = weapons[currentIndex];
-        ApplyWeaponVisual(previousIndex, currentIndex);
+        // set currentWeapon here because the client cannot execute the server rpc function
+        // so for the client who aren't hosting the game the currentWeapon will not be set
+        currentWeapon = weapons[requestedIndex];
+        DisableUnequipedWeapon(clientId, currentWeapon.name);
+        Debug.Log($"Weapon changed  to {currentWeapon.name}");
     }
-    /// <summary>
-    /// apply the weapon visual change by deactivating the previous weapon and activating the new one, with debug logs for tracking.
-    /// </summary>
-    /// <param name="previousIndex"></param>
-    /// <param name="newIndex"></param>
-    private void ApplyWeaponVisual(int previousIndex, int newIndex)
-    {
-        Debug.Log($"Weapon changed from {previousIndex} to {newIndex}");
 
-        if (IsValidWeaponIndex(previousIndex))
-        {
-            weapons[previousIndex].SetActive(false);
-        }
-        
-
-        if (IsValidWeaponIndex(newIndex))
-        {
-            weapons[newIndex].SetActive(true);
-        }
-         
-        else
-        {
-            Debug.LogWarning($"Invalid weapon index: {newIndex}");
-        }
-    }
     /// <summary>
-    /// disable weapon that index is different from the equiped weapon index
+    /// disable weapon that name is different from the equiped weapon name
     /// </summary>
-    /// <param name="equipedWeaponsIndex"></param>
-    private void DisableUnequipedWeapon(int equipedWeaponsIndex)
+    /// <param name="equipedWeaponName"></param>
+    private void DisableUnequipedWeapon(ulong clientId, string equipedWeaponName)
     {
         for (int i = 0; i < weapons.Length; i++) {
-            if (i != equipedWeaponsIndex)
-            {
-                weapons[i].SetActive(false);
-            }
+            weaponSwitchEventChanel.SetIsGameobjectActive(clientId, equipedWeaponName);
         }
     }
 

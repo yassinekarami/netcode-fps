@@ -1,10 +1,12 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "LocalUIEventChanelScriptableObject", menuName = "Scriptable Objects/LocalUIEventChanelScriptableObject")]
 public class LocalUIEventChanelScriptableObject : ScriptableObject
 {
+    /// <summary>
+    /// list of listeners
+    /// </summary>
     private List <LocalUIController> listeners;
 
     /// <summary>

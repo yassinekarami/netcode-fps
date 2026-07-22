@@ -107,6 +107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileController
   ShowTopMostFoldoutHeaderGroup: 1
+  data: {fileID: 11400000, guid: b0ffcc612b6455e4b93a6a92db8c2f3a, type: 2}
 --- !u!65 &3614042394546568084
 BoxCollider:
   m_ObjectHideFlags: 0

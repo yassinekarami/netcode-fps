@@ -36,10 +36,6 @@ public class PlayerInputScriptableObject : ScriptableObject
         pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
         cameraTransform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
     }
-    public void ChangeWeapon(CharacterController characterController)
-    {
-        Debug.Log("switch weapon");
-    }
 
     public void FireWeapon(WeaponController weaponController)
     {
@@ -56,6 +52,6 @@ public class PlayerInputScriptableObject : ScriptableObject
     public void ChangeWeapon(WeaponController weaponController)
     {
         Debug.Log("switch weapon");
-        weaponController.SelectNextWeapon();
+        weaponController.SelectNextWeaponIndex();
     }
 }

@@ -43,8 +43,6 @@ public class PlayerNetworkMovementSync : NetworkBehaviour
     /// </summary>
     public override void OnNetworkSpawn()
     {
-        Time.fixedDeltaTime = 1f / NetworkManager.Singleton.NetworkConfig.TickRate;
-        Debug.Log($"fixed delta time {Time.fixedDeltaTime}");
         base.OnNetworkSpawn();
         if (!IsOwner) return;
 
@@ -83,12 +81,12 @@ public class PlayerNetworkMovementSync : NetworkBehaviour
     {
         if (IsOwner)
         {
-            CaptureAndSendInput();
+         //   CaptureAndSendInput();
         }
 
         if (IsServer)
         {
-            SimulateMovementAndReconciliate();
+       //     SimulateMovementAndReconciliate();
         }
     }
 
@@ -103,10 +101,10 @@ public class PlayerNetworkMovementSync : NetworkBehaviour
 
 
         // Debug.Log($" Tick {NetworkManager.LocalTime.Tick} buffer value at index {index} : {positionBuffer[index].movement}");
-        playerInputScriptableObject.MoveCharacter(simulateCharacterController, inputBuffer[index].movement);
-        playerInputScriptableObject.RotateCharacter(simulateCharacterController.transform, simulationCameraTransform, inputBuffer[index].rotation);
+        //playerInputScriptableObject.MoveCharacter(simulateCharacterController, inputBuffer[index].movement);
+        //playerInputScriptableObject.RotateCharacter(simulateCharacterController.transform, simulationCameraTransform, inputBuffer[index].rotation);
 
-        ReconcilitationClientRpc(simulateCharacterController.transform.position, simulationCameraTransform.transform.rotation, NetworkManager.LocalTime.Tick);
+        //ReconcilitationClientRpc(simulateCharacterController.transform.position, simulationCameraTransform.transform.rotation, NetworkManager.LocalTime.Tick);
     }
 
 

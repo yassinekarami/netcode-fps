@@ -38,7 +38,7 @@ public class ObjectPoolManager : NetworkBehaviour
         }
         else if(name == "DiscProjectile")
         {
-            //   discProjecileObjectPool.SpawnObject(position, rotation, ownerId);
+            discProjecileObjectPool.SpawnObject(position, rotation, ownerId);
             Debug.LogWarning("disc projectile is not available");
         }
     }
@@ -56,7 +56,6 @@ public class ObjectPoolManager : NetworkBehaviour
         else if (name == "DiscProjectile")
         {
             discProjecileObjectPool.Despawn((DiscProjectilePooledObject)gameObject);
-            Debug.LogWarning("disc projectile is not available");
         }
     }
 

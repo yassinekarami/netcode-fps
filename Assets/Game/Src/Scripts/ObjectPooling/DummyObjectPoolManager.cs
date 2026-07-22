@@ -53,8 +53,7 @@ public class DummyObjectPoolManager : NetworkBehaviour
         }
         else if (name == "DiscProjectile")
         {
-          //  dummyDiscProjectileObjectPool.SpawnObject(position, rotation, ownerId);
-            Debug.LogWarning("disc projectile is not available");
+            dummyDiscProjectileObjectPool.SpawnObject(position, rotation, ownerId);
         }
     }
 }
