@@ -14,7 +14,7 @@ public class ProjectileController : NetworkBehaviour
         timer += Time.fixedDeltaTime;
         if (timer > data.ttl)
         {
-            ObjectPoolManager.instance.DespawnObject(data.projectileName, gameObject.GetComponent<BlasterProjectilePooledObject>());
+           // ObjectPoolManager.instance.DespawnObject(data.projectileName, gameObject.GetComponent<AbstractPooledObject>());
             timer = 0;
         }
     }

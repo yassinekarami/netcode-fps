@@ -244,9 +244,19 @@ MonoBehaviour:
   - {fileID: 5646165488041817916}
   - {fileID: 6213450580523473443}
   localUIEventChanel: {fileID: 11400000, guid: 3bf207760cd779f408b73ce593520e93, type: 2}
-  weaponSwitchEventChanel: {fileID: 11400000, guid: 19d22d8c5866a074ab2b30cdaee3db80,
+  networkWeaponSwitchEventChanel: {fileID: 11400000, guid: 19d22d8c5866a074ab2b30cdaee3db80,
     type: 2}
-  weaponData: {fileID: 11400000, guid: dbb579cb31b274c4d8055570b8b61622, type: 2}
+  weaponDataSO: {fileID: 11400000, guid: dbb579cb31b274c4d8055570b8b61622, type: 2}
+  currentAmmo:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+  remainingMagazine:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
 --- !u!82 &7583640433812654122
 AudioSource:
   m_ObjectHideFlags: 0

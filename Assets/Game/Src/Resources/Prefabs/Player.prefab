@@ -349,6 +349,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 5407053612063325809}
   - {fileID: 3440481199687516694}
   m_Father: {fileID: 4410112796301525825}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -514,7 +515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3536976022
+  GlobalObjectIdHash: 1922222009
   InScenePlacedSourceGlobalObjectIdHash: 1922222009
   DeferredDespawnTick: 0
   Ownership: 1
@@ -526,7 +527,7 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
+  SyncOwnerTransformWhenParented: 0
   AllowOwnerToParent: 0
 --- !u!114 &680890629629907060
 MonoBehaviour:
@@ -592,6 +593,7 @@ MonoBehaviour:
     type: 2}
   weaponController: {fileID: 8115908104768148324}
   playerCamera: {fileID: 9095711913598343155}
+  weaponHolder: {fileID: 6248592441278575924}
 --- !u!114 &8115908104768148324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -615,7 +617,7 @@ MonoBehaviour:
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
   weaponHolder: {fileID: 6390548193582862727}
-  weaponSwitchEventChanel: {fileID: 11400000, guid: 19d22d8c5866a074ab2b30cdaee3db80,
+  networkWeaponSwitchEventChanel: {fileID: 11400000, guid: 19d22d8c5866a074ab2b30cdaee3db80,
     type: 2}
 --- !u!114 &1669846861342644418
 MonoBehaviour:
@@ -1026,7 +1028,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6248592441278575924}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1035,7 +1037,7 @@ Transform:
   - {fileID: 6390548193582862727}
   - {fileID: 1855500837273243619}
   - {fileID: 6772121001737808891}
-  m_Father: {fileID: 3440481199687516694}
+  m_Father: {fileID: 3124756172901406828}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8065464371894522208
 GameObject:
@@ -1216,7 +1218,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3177183304817072186}
-  - {fileID: 5407053612063325809}
   - {fileID: 6644245114627368505}
   m_Father: {fileID: 3124756172901406828}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

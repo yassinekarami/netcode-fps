@@ -23,19 +23,19 @@ public class DummyObjectPoolManager : NetworkBehaviour
             if (dummyBlasterProjectileObjectPool == null)
             {
                 dummyBlasterProjectileObjectPool = new DummyBlasterProjectileObjectPool();
-                dummyBlasterProjectileObjectPool.Initialize("Prefabs/Projectiles/Dummy/dummy_projectile_Blaster", 3, instance.gameObject.transform);
+                dummyBlasterProjectileObjectPool.Initialize("Prefabs/Projectiles/Dummy/dummy_projectile_Blaster", 10, instance.gameObject.transform);
             }
             if (dummyShotgunProjectileObjectPool == null)
             {
                 dummyShotgunProjectileObjectPool = new DummyShotgunProjectileObjectPool();
-                dummyShotgunProjectileObjectPool.Initialize("Prefabs/Projectiles/Dummy/dummy_projectile_Shotgun", 3, instance.gameObject.transform);
+                dummyShotgunProjectileObjectPool.Initialize("Prefabs/Projectiles/Dummy/dummy_projectile_Shotgun", 10, instance.gameObject.transform);
             }
 
             if (dummyDiscProjectileObjectPool == null)
             {
 
                 dummyDiscProjectileObjectPool = new DummyDiscProjectileObjectPool();
-                dummyDiscProjectileObjectPool.Initialize("Prefabs/Projectiles/Dummy/dummy_projectile_Disc", 3, instance.gameObject.transform);
+    //            dummyDiscProjectileObjectPool.Initialize("Prefabs/Projectiles/Dummy/dummy_projectile_Disc", 3, instance.gameObject.transform);
             }
         }
     }
@@ -53,7 +53,7 @@ public class DummyObjectPoolManager : NetworkBehaviour
         }
         else if (name == "DiscProjectile")
         {
-            dummyDiscProjectileObjectPool.SpawnObject(position, rotation, ownerId);
+   //         dummyDiscProjectileObjectPool.SpawnObject(position, rotation, ownerId);
         }
     }
 }

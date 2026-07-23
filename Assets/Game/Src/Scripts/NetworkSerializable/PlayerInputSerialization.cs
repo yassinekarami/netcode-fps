@@ -4,12 +4,16 @@ using UnityEngine;
 /// <summary>
 /// structure holding the player's movement input and the associated tick
 /// </summary>
-public struct PlayerPositionInputSerialization : INetworkSerializable
+public struct PlayerInputSerialization : INetworkSerializable
 {
     /// <summary>
     /// movement input being read
     /// </summary>
     public Vector2 movement;
+    /// <summary>
+    /// rotation input being read
+    /// </summary>
+    public Vector3 rotation;
     /// <summary>
     /// the tick
     /// </summary>
@@ -23,6 +27,7 @@ public struct PlayerPositionInputSerialization : INetworkSerializable
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         serializer.SerializeValue(ref movement);
+        serializer.SerializeValue(ref rotation);
         serializer.SerializeValue(ref tick);
     }
 }

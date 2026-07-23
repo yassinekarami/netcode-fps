@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.FPS.Game;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "WeaponSwitchEventScriptableObject", menuName = "Scriptable Objects/WeaponSwitchEventChanelScriptableObject")]
@@ -20,12 +19,24 @@ public class WeaponSwitchEventChanelScriptableObject : ScriptableObject
     }
 
     /// <summary>
-    /// remove a listner
+    /// remove a listener
     /// </summary>
     /// <param name="listener"></param>
     public void RemoveListeners(Weapon listener)
     {
         listeners.Remove(listener);
+    }
+
+    /// <summary>
+    /// method to log all the listener for a event
+    /// used of debbugging puporses
+    /// </summary>
+    public void GetListeners()
+    {
+        foreach (Weapon l in listeners)
+        {
+            Debug.Log($"listener owner {l.OwnerClientId}");
+        }
     }
 
     /// <summary>

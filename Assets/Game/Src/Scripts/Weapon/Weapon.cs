@@ -1,19 +1,7 @@
-using System;
 using Unity.Netcode;
 using UnityEngine;
 
-/// <summary>
-/// Data structure for holding the weaponData
-/// </summary>
-struct weaponDataStruct
-{
-    public int currentAmmo { get; set; }
-    public int magazineSize { get; set; }
-    public int maxMagazine { get; set; }
 
-    public bool hasBeenInitialized { get; set; }
-
-}
 public class Weapon : NetworkBehaviour
 {
     /// <summary>
@@ -22,7 +10,7 @@ public class Weapon : NetworkBehaviour
     [SerializeField]
     private GameObject[] componentToDisabledEnable;
     /// <summary>
-    /// event chanel where event related to UI ( firing / reloading ... ) will be published
+    /// event chanel where event related to UI will be published
     /// </summary>
     [SerializeField]
     private LocalUIEventChanelScriptableObject localUIEventChanel;
@@ -30,44 +18,72 @@ public class Weapon : NetworkBehaviour
     /// event chanel where event related to weapon switch will be published
     /// </summary>
     [SerializeField]
-    private WeaponSwitchEventChanelScriptableObject weaponSwitchEventChanel;
+    private WeaponSwitchEventChanelScriptableObject networkWeaponSwitchEventChanel;
     /// <summary>
     /// scriptable object holding the initial weapon data
     /// </summary>
     [SerializeField]
-    private WeaponScriptableObject weaponData;
+    private WeaponScriptableObject weaponDataSO;
     /// <summary>
-    /// structure holding a copy of the weapon data for the weapon's firing / reloading logic
+    /// network variable for synchronizing the current ammo
     /// </summary>
-    weaponDataStruct weaponAmmo;
+    public NetworkVariable<int> currentAmmo = new NetworkVariable<int>(default, NetworkVariableReadPermission.Owner, NetworkVariableWritePermission.Server);
+    /// <summary>
+    /// network variable for synchronizing the remaining magazine
+    /// </summary>
+    public NetworkVariable<int> remainingMagazine = new NetworkVariable<int>(default, NetworkVariableReadPermission.Owner, NetworkVariableWritePermission.Server);
 
+    private bool hasBeenInitiated = false;
+
+    /// <summary>
+    /// called when the network object is spawned , initialize the variable, and add event when the values changes
+    /// </summary>
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        Debug.Log($"weapon has been spawned {gameObject.name} {NetworkBehaviourId}");
-        weaponSwitchEventChanel.AddListeners(this);
+        networkWeaponSwitchEventChanel.AddListeners(this);
+        if (IsOwner)
+        {
+            Debug.Log($"weapon has been spawned {gameObject.name} {NetworkBehaviourId}");
+
+        }
+        if (IsServer)
+        {
+            if (!hasBeenInitiated)
+            {
+                currentAmmo.Value = weaponDataSO.magazineSize;
+                remainingMagazine.Value = weaponDataSO.maxMagazine;
+                hasBeenInitiated = true;
+            }
+        }
+
+        currentAmmo.OnValueChanged += HandleUpdateAmmoUI;
+        remainingMagazine.OnValueChanged += HandleUpdateRemainingMagazineUI;
     }
 
+    /// <summary>
+    /// called when the network object is despawn
+    /// </summary>
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
-        weaponSwitchEventChanel.RemoveListeners(this);
+        networkWeaponSwitchEventChanel.RemoveListeners(this);
+        currentAmmo.OnValueChanged -= HandleUpdateAmmoUI;
+        remainingMagazine.OnValueChanged -= HandleUpdateRemainingMagazineUI;
     }
+
     private void OnEnable()
     {
-        if (!weaponAmmo.hasBeenInitialized)
-        {
-            weaponAmmo.currentAmmo = weaponData.magazineSize;
-            weaponAmmo.maxMagazine = weaponData.maxMagazine;
-            weaponAmmo.magazineSize = weaponData.magazineSize;
-            weaponAmmo.hasBeenInitialized = true;
-        }
-
-        localUIEventChanel.RaiseUpdateAmmoUIEvent(ToPercentage(weaponAmmo.currentAmmo, weaponAmmo.magazineSize));
-        localUIEventChanel.RaiseUpdateMagazineNumberUIEvent(weaponAmmo.maxMagazine);
-
+        HandleUpdateAmmoUI(-1, currentAmmo.Value);
+        HandleUpdateRemainingMagazineUI(-1, remainingMagazine.Value);
     }
 
+    /// <summary>
+    /// Enables this object's configured GameObjects if its name matches the
+    /// specified target; otherwise, disables them.
+    /// </summary>
+    /// <param name="clientId">The client requesting the update.</param>
+    /// <param name="objectToEnable">The name of the GameObject to enable.</param>
     public void SetIsGameobjectActive(ulong clientId, string objectToEnable)
     {
         if (clientId != OwnerClientId) return;
@@ -77,6 +93,8 @@ public class Weapon : NetworkBehaviour
             foreach (GameObject go in componentToDisabledEnable)
             {
                 go.SetActive(true);
+                HandleUpdateAmmoUI(-1, currentAmmo.Value);
+                HandleUpdateRemainingMagazineUI(-1, remainingMagazine.Value);
             }
         }
         else
@@ -88,6 +106,30 @@ public class Weapon : NetworkBehaviour
         }
     }
 
+
+    /// <summary>
+    /// raise an event to update the remaining ammo UI
+    /// </summary>
+    /// <param name="previousValue"></param>
+    /// <param name="nextValue"></param>
+    private void HandleUpdateAmmoUI(int previousValue, int nextValue)
+    {
+        if (!IsOwner) { return; }
+        localUIEventChanel.RaiseUpdateAmmoUIEvent(ToPercentage(nextValue, weaponDataSO.magazineSize));
+    }
+
+
+    /// <summary>
+    /// raise an event to update the remaining magazine UI
+    /// </summary>
+    /// <param name="previousValue"></param>
+    /// <param name="nextValue"></param>
+    private void HandleUpdateRemainingMagazineUI(int previousValue, int nextValue)
+    {
+        if (!IsOwner) { return; }
+        localUIEventChanel.RaiseUpdateMagazineNumberUIEvent(nextValue);
+    }
+
     /// <summary>
     /// send a request to the server to fire the weapon
     /// </summary>
@@ -97,24 +139,23 @@ public class Weapon : NetworkBehaviour
     {
         Debug.Log($"Client {OwnerClientId} requested weaponFire");
 
-        if (weaponData == null)
+        if (currentAmmo == null || remainingMagazine == null)
         {
             Debug.LogWarning("Weapon data is not assigned.");
             return;
         }
         // Logique de tir ici, par exemple instancier un projectile
-        Debug.Log($"Firing weapon: {weaponData.weaponName}");
-        if (weaponAmmo.currentAmmo > 0)
+        Debug.Log($"Firing weapon: {weaponDataSO.weaponName}");
+        if (currentAmmo.Value > 0)
         {
-            weaponAmmo.currentAmmo--;
-            localUIEventChanel.RaiseUpdateAmmoUIEvent(ToPercentage(weaponAmmo.currentAmmo, weaponAmmo.magazineSize));
-            ObjectPoolManager.instance.SpawnObject(weaponData.projectileData.projectileName, transform.position, transform.rotation, OwnerClientId);
+            currentAmmo.Value--;
+            ObjectPoolManager.instance.SpawnObject(weaponDataSO.projectileData.projectileName, transform.position, transform.rotation, OwnerClientId);
             ApplyWeaponFireVisualClientRpc();
         }
         else
         {
             Debug.Log("Out of ammo , Reloading!");
-            RequestReloadServerRpc();
+            Reload();
         }
     }
 
@@ -126,7 +167,7 @@ public class Weapon : NetworkBehaviour
     public void ApplyWeaponFireVisualClientRpc()
     {
         Debug.Log($"Client {OwnerClientId} applying weapon fire visual effect");
-        DummyObjectPoolManager.instance.SpawnObject(weaponData.projectileData.projectileName, transform.position, transform.rotation, OwnerClientId);
+        DummyObjectPoolManager.instance.SpawnObject(weaponDataSO.projectileData.projectileName, transform.position, transform.rotation, OwnerClientId);
     }
 
     /// <summary>
@@ -138,34 +179,27 @@ public class Weapon : NetworkBehaviour
     {
         Debug.LogWarning($"Client {OwnerClientId} requested reload");
         if (!IsOwner) return;
-        if (weaponData == null)
+        if (currentAmmo == null || remainingMagazine == null)
         {
             Debug.LogWarning("Weapon data is not assigned.");
             return;
         }
-     
-        bool hasReloadingSucceed = ReloadWeapon();
-        if (hasReloadingSucceed) 
-        {
-            localUIEventChanel.RaiseUpdateAmmoUIEvent(ToPercentage(weaponAmmo.currentAmmo, weaponAmmo.magazineSize));
-            localUIEventChanel.RaiseUpdateMagazineNumberUIEvent(weaponAmmo.maxMagazine);
-        }
+        Reload();
 
-        Debug.Log($"Reloaded weapon: {weaponData.weaponName}. Current ammo: {weaponAmmo.currentAmmo}");
+
+
     }
-
     /// <summary>
-    /// reload the weapon by resetting the current ammo to the magazine size and reducing the max ammo accordingly.
+    /// function called to reload the weapon 
+    /// it called either when the player request a reload or when the player try to shoot and there is currentAmmo = 0
     /// </summary>
-    private bool ReloadWeapon()
+    private void Reload()
     {
-        if (weaponAmmo.maxMagazine > 0)
+        if (remainingMagazine.Value > 0)
         {
-            weaponAmmo.currentAmmo = weaponData.magazineSize;
-            weaponAmmo.maxMagazine--;
-            return true;
+            currentAmmo.Value = weaponDataSO.magazineSize;
+            remainingMagazine.Value--;
         }
-        return false;
     }
 
     /// <summary>

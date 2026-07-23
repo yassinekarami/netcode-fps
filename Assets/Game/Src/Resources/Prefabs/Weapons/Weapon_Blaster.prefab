@@ -407,9 +407,19 @@ MonoBehaviour:
   - {fileID: 1505447205160222267}
   - {fileID: 8088409166493606719}
   localUIEventChanel: {fileID: 11400000, guid: 3bf207760cd779f408b73ce593520e93, type: 2}
-  weaponSwitchEventChanel: {fileID: 11400000, guid: 19d22d8c5866a074ab2b30cdaee3db80,
+  networkWeaponSwitchEventChanel: {fileID: 11400000, guid: 19d22d8c5866a074ab2b30cdaee3db80,
     type: 2}
-  weaponData: {fileID: 11400000, guid: 361920c7637e54f4eb6d4914227f8703, type: 2}
+  weaponDataSO: {fileID: 11400000, guid: 361920c7637e54f4eb6d4914227f8703, type: 2}
+  currentAmmo:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+  remainingMagazine:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
 --- !u!1 &2867801751256125023
 GameObject:
   m_ObjectHideFlags: 0

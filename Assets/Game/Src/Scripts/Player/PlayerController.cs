@@ -13,6 +13,8 @@ public class PlayerController : NetworkBehaviour
     private WeaponController weaponController;
     [SerializeField]
     private GameObject playerCamera;
+    [SerializeField]
+    private GameObject weaponHolder;
 
 
     [Header("InputAction")]
@@ -120,7 +122,7 @@ public class PlayerController : NetworkBehaviour
     private void ActionRotateCharacterPerformed(Vector2 lookInput)
     {
         if (!IsOwner) { return; }
-        playerInputScriptableObject.RotateCharacter(gameObject.transform, playerCamera.transform, lookInput);
+        playerInputScriptableObject.RotateCharacter(gameObject.transform, weaponHolder.transform, playerCamera.transform, lookInput);
     }
 
     /// <summary>

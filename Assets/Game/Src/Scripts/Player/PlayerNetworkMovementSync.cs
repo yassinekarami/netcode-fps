@@ -139,7 +139,7 @@ public class PlayerNetworkMovementSync : NetworkBehaviour
             Vector2 replayMove = inputBuffer[replayIndex].movement;
             Vector2 replayLook = inputBuffer[replayIndex].rotation;
 
-            playerInputScriptableObject.RotateCharacter(transform, simulationCameraTransform, replayLook);
+      //      playerInputScriptableObject.RotateCharacter(transform, simulationCameraTransform, replayLook);
             playerInputScriptableObject.MoveCharacter(characterController, replayMove);
         }
     }

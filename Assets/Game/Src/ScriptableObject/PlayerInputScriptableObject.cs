@@ -1,7 +1,4 @@
-using Unity.FPS.Game;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 [CreateAssetMenu(fileName = "PlayerInputScriptableObject", menuName = "Scriptable Objects/PlayerInputScriptableObject")]
 public class PlayerInputScriptableObject : ScriptableObject
@@ -23,7 +20,7 @@ public class PlayerInputScriptableObject : ScriptableObject
         characterController.Move(movementVector * Time.deltaTime);
     }
 
-    public void RotateCharacter(Transform characterTransform, Transform cameraTransform, Vector2 lookValue)
+    public void RotateCharacter(Transform characterTransform, Transform weaponHolder, Transform cameraTransform, Vector2 lookValue)
     {
         float mouseX = lookValue.x * lookSpeed;
         float mouseY = lookValue.y * lookSpeed;
@@ -35,6 +32,7 @@ public class PlayerInputScriptableObject : ScriptableObject
         pitch -= mouseY;
         pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
         cameraTransform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+        weaponHolder.localRotation = Quaternion.Euler(pitch, 0f, 0f);
     }
 
     public void FireWeapon(WeaponController weaponController)
@@ -52,6 +50,6 @@ public class PlayerInputScriptableObject : ScriptableObject
     public void ChangeWeapon(WeaponController weaponController)
     {
         Debug.Log("switch weapon");
-        weaponController.SelectNextWeaponIndex();
+        weaponController.RequestWeaponChangeServerRpc();
     }
 }
