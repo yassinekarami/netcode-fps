@@ -17,3 +17,4 @@ MonoBehaviour:
   fireRate: 1
   maxMagazine: 6
   magazineSize: 5
+  icon: {fileID: 21300000, guid: b80f7f2ce56c1c04090318ca064947d2, type: 3}

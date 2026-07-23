@@ -8,6 +8,7 @@ public class LocalUIController : MonoBehaviour
     [SerializeField] Image fillImageHealth;
     [SerializeField] Image fillImageAmmo;
     [SerializeField] TextMeshProUGUI magazineNumber;
+    [SerializeField] Image weaponIcon;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,8 +37,9 @@ public class LocalUIController : MonoBehaviour
         magazineNumber.text = number.ToString();
     }
 
-    public void UpdateWeaponUI(int remainingWeapon)
-    { 
+    public void UpdateWeaponIcon(Sprite newIcon)
+    {
+        weaponIcon.sprite = newIcon;
     }
 
 

@@ -62,15 +62,12 @@ public class LocalUIEventChanelScriptableObject : ScriptableObject
         }
     }
 
-    /// <summary>
-    /// make the listener update the whole ammo UI ( when changing weapon )
-    /// </summary>
-    /// <param name="number"></param>
-    public void RaiseUpdateWeaponUIEvent(int number)
+
+    public void RaiseUpdateWeaponIconEvent(Sprite icon)
     {
         foreach (LocalUIController l in listeners)
         {
-            l.UpdateWeaponUI(number);
+            l.UpdateWeaponIcon(icon);
         }
     }
 }

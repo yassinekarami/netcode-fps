@@ -59,6 +59,7 @@ public class Weapon : NetworkBehaviour
 
         currentAmmo.OnValueChanged += HandleUpdateAmmoUI;
         remainingMagazine.OnValueChanged += HandleUpdateRemainingMagazineUI;
+        HandleUpdateWeaponIconUI(weaponDataSO.icon);
     }
 
     /// <summary>
@@ -95,6 +96,7 @@ public class Weapon : NetworkBehaviour
                 go.SetActive(true);
                 HandleUpdateAmmoUI(-1, currentAmmo.Value);
                 HandleUpdateRemainingMagazineUI(-1, remainingMagazine.Value);
+                HandleUpdateWeaponIconUI(weaponDataSO.icon);
             }
         }
         else
@@ -128,6 +130,12 @@ public class Weapon : NetworkBehaviour
     {
         if (!IsOwner) { return; }
         localUIEventChanel.RaiseUpdateMagazineNumberUIEvent(nextValue);
+    }
+
+    private void HandleUpdateWeaponIconUI(Sprite weaponIcon)
+    {
+        if (!IsOwner) { return; }
+        localUIEventChanel.RaiseUpdateWeaponIconEvent(weaponIcon);
     }
 
     /// <summary>
